@@ -32,7 +32,7 @@ namespace ShootEmUp
                 return;
             }
             
-            if (!this.target.GetComponent<HitPointsComponent>().IsHitPointsExists())
+            if (!this.target.GetComponent<HitPointsComponent>().HasHitPoints())
             {
                 return;
             }
