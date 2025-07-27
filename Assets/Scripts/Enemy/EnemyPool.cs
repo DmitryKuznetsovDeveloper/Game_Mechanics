@@ -1,62 +1,18 @@
-using System.Collections.Generic;
-using Enemy.Agents;
-using UnityEngine;
+﻿using UnityEngine;
+using ObjectPool;
 
 namespace Enemy
 {
-    public sealed class EnemyPool : MonoBehaviour
+    public sealed class EnemyPool
     {
-        [Header("Spawn")]
-        [SerializeField]
-        private EnemyPositions enemyPositions;
+        private readonly IPool<EnemyView> _pool;
 
-        [SerializeField]
-        private GameObject character;
-
-        [SerializeField]
-        private Transform worldTransform;
-
-        [Header("Pool")]
-        [SerializeField]
-        private Transform container;
-
-        [SerializeField]
-        private GameObject prefab;
-
-        private readonly Queue<GameObject> enemyPool = new();
-        
-        private void Awake()
+        public EnemyPool(EnemyView prefab, int count, Transform container)
         {
-            for (var i = 0; i < 7; i++)
-            {
-                var enemy = Instantiate(this.prefab, this.container);
-                this.enemyPool.Enqueue(enemy);
-            }
+            _pool = new ObjectPool<EnemyView>(prefab, count, container);
         }
 
-        public GameObject SpawnEnemy()
-        {
-            if (!this.enemyPool.TryDequeue(out var enemy))
-            {
-                return null;
-            }
-
-            enemy.transform.SetParent(this.worldTransform);
-
-            var spawnPosition = this.enemyPositions.RandomSpawnPosition();
-            enemy.transform.position = spawnPosition.position;
-            
-            var attackPosition = this.enemyPositions.RandomAttackPosition();
-            enemy.GetComponent<EnemyMoveAgent>().SetDestination(attackPosition.position);
-
-            enemy.GetComponent<EnemyAttackAgent>().SetTarget(this.character);
-            return enemy;
-        }
-
-        public void UnspawnEnemy(GameObject enemy)
-        {
-            enemy.transform.SetParent(this.container);
-            this.enemyPool.Enqueue(enemy);
-        }
+        public EnemyView Spawn() => _pool.Get();
+        public void Unspawn(EnemyView view) => _pool.Return(view);
     }
 }

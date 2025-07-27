@@ -17,10 +17,10 @@ TagManager:
   - 
   - Character
   - Enemy
-  - 
   - EnemyBullet
-  - PlayerBullet
+  - CharacterBullet
   - LevelBounds
+  - 
   - 
   - 
   - 

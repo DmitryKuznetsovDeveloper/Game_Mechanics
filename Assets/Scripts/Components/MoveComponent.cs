@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Components
 {
+    
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class MoveComponent : MonoBehaviour
     {

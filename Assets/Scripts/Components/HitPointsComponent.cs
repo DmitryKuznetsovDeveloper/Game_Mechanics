@@ -8,7 +8,13 @@ namespace Components
         public event Action<GameObject> OnDeath;
         
         [SerializeField] private int _hitPoints;
+        private int _initialHitPoints;
 
+        private void Awake()
+        {
+            _initialHitPoints = _hitPoints;
+        }
+        
         public bool HasHitPoints()
         {
             return _hitPoints > 0;
@@ -20,6 +26,11 @@ namespace Components
             
             if (_hitPoints.Equals(0)) 
                 OnDeath?.Invoke(gameObject);
+        }
+        
+        public void ResetHitPoints()
+        {
+            _hitPoints = _initialHitPoints;
         }
     }
 }

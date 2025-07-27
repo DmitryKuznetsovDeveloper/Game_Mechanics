@@ -4,7 +4,7 @@ namespace Bullets
     {
         CHARACTER = 10,
         ENEMY = 11,
-        ENEMY_BULLET = 13,
-        PLAYER_BULLET = 14
+        ENEMY_BULLET = 12,
+        PLAYER_BULLET = 13,
     }
 }

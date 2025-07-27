@@ -14,12 +14,14 @@ namespace Bullets
     
     public struct BulletData
     {
-        public Vector3 Position;
+        public Vector2 Position;
         public Quaternion Rotation;
+        public Vector2 Direction;
         public float Speed;
         public int Damage;
         public int Layer;
         public Color Color;
         public bool IsPlayer;
     }
+
 }

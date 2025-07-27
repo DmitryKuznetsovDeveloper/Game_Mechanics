@@ -6,7 +6,7 @@ namespace Character
     [RequireComponent(typeof(HitPointsComponent))]
     public sealed class CharacterDeathHandler : MonoBehaviour
     {
-        [SerializeField] GameManager.GameManager _gameManager;
+        private GameManager.GameManager _gameManager;
         private HitPointsComponent _hitPointsComponent;
 
         private void Awake()
@@ -22,6 +22,11 @@ namespace Character
         private void OnDisable()
         {
             _hitPointsComponent.OnDeath -= OnCharacterDeath;
+        }
+        
+        public void InjectDependencies(GameManager.GameManager gameManager)
+        {
+            _gameManager = gameManager;
         }
         
         private void OnCharacterDeath(GameObject _)

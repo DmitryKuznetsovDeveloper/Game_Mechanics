@@ -16,14 +16,16 @@ namespace Bullets
         private int _damage;
         private bool _isPlayer;
         private float _speed;
-    
+        private Vector2 _direction;
+
         public void Initialize(BulletData data)
         {
             transform.position = data.Position;
             transform.rotation = data.Rotation;
             _damage = data.Damage;
             _isPlayer = data.IsPlayer;
-
+            _direction = data.Direction;
+    
             gameObject.layer = data.Layer;
             _renderer.color = data.Color;
             _moveComponent.SetSpeed(data.Speed);
@@ -31,7 +33,7 @@ namespace Bullets
     
         public void Fire()
         {
-            _moveComponent.MoveByRigidbodyVelocity(transform.up);
+            _moveComponent.MoveByRigidbodyVelocity(_direction);
         }
     
         public void Stop()

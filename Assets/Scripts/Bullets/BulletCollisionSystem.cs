@@ -12,16 +12,23 @@ namespace Bullets
     {
         public void Process(IBullet bullet, GameObject target, IDamageSystem damageSystem)
         {
-            if (bullet is not Bullet concreteBullet)
+            // 1) Игнорируем любые столкновения пуля ←→ пуля
+            if (target.TryGetComponent<IBullet>(out _))
                 return;
-            
-            if (target.TryGetComponent<TeamComponent>(out var teamComp))
+
+            switch (bullet)
             {
-                if (teamComp.IsPlayer == concreteBullet.IsPlayer)
+                // 2) Игнорируем попадания в «своих»
+                case Bullet concreteBullet
+                    when target.TryGetComponent<TeamComponent>(out var teamComp)
+                         && teamComp.IsPlayer.Equals(concreteBullet.IsPlayer):
                     return;
+                // 3) Всем остальным наносим урон
+                case Bullet cb:
+                    damageSystem.ApplyDamage(target, cb.Damage, cb.IsPlayer);
+                    break;
             }
-            
-            damageSystem.ApplyDamage(target, concreteBullet.Damage, concreteBullet.IsPlayer);
         }
+
     }
 }

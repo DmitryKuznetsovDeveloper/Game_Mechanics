@@ -29,6 +29,9 @@ namespace Bullets
 
         private void HandleHit(IBullet bullet, GameObject target)
         {
+            if (target.TryGetComponent<IBullet>(out _))
+                return;
+            
             _collisionSystem.Process(bullet, target, _damageSystem);
             bullet.OnCollision -= HandleHit;
             bullet.OnTriggerEnter -= HandleHit;

@@ -1,3 +1,4 @@
+using Bullets;
 using Components;
 using Input;
 using UnityEngine;
@@ -6,10 +7,16 @@ namespace Character
 {
     public sealed class PlayerInputController : MonoBehaviour
     {
-        [SerializeField] private InputReader _inputReader;
         [SerializeField] private AttackComponent _attackComponent;
         [SerializeField] private MoveComponent _moveComponent;
+        private InputReader _inputReader;
 
+        public void InjectDependencies(BulletSystem bulletSystem, InputReader inputReader)
+        {
+            _attackComponent.InjectDependencies(bulletSystem);
+            _inputReader = inputReader;
+        }
+        
         private void Update()
         {
             if (_inputReader.FirePressed)
