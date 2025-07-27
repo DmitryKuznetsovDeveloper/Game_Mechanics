@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ShootEmUp
+namespace Components
 {
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class MoveComponent : MonoBehaviour
@@ -12,11 +12,15 @@ namespace ShootEmUp
         {
             _rb = GetComponent<Rigidbody2D>();
         }
-
+        
+        public void SetSpeed(float speed)
+        {
+            _speed = speed;
+        }
+        
         public void MoveByRigidbodyVelocity(Vector2 direction)
         {
-            var nextPosition = _rb.position + direction * _speed;
-            _rb.MovePosition(nextPosition);
+            _rb.linearVelocity = direction * _speed;
         }
     }
 }

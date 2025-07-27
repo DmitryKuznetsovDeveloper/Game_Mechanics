@@ -1,44 +1,56 @@
-using System;
+﻿using System;
+using Components;
 using UnityEngine;
 
-namespace ShootEmUp
+namespace Bullets
 {
-    public sealed class Bullet : MonoBehaviour
+    [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(SpriteRenderer))]
+    public sealed class Bullet : MonoBehaviour, IBullet
     {
-        public event Action<Bullet, Collision2D> OnCollisionEntered;
+        public event Action<IBullet, GameObject> OnCollision;
+        public event Action<IBullet, GameObject> OnTriggerEnter;
+        
+        [SerializeField] private SpriteRenderer _renderer;
+        [SerializeField] private MoveComponent _moveComponent;
+    
+        private int _damage;
+        private bool _isPlayer;
+        private float _speed;
+    
+        public void Initialize(BulletData data)
+        {
+            transform.position = data.Position;
+            transform.rotation = data.Rotation;
+            _damage = data.Damage;
+            _isPlayer = data.IsPlayer;
 
-        [NonSerialized] public bool isPlayer;
-        [NonSerialized] public int damage;
-
-        [SerializeField]
-        private new Rigidbody2D rigidbody2D;
-
-        [SerializeField]
-        private SpriteRenderer spriteRenderer;
+            gameObject.layer = data.Layer;
+            _renderer.color = data.Color;
+            _moveComponent.SetSpeed(data.Speed);
+        }
+    
+        public void Fire()
+        {
+            _moveComponent.MoveByRigidbodyVelocity(transform.up);
+        }
+    
+        public void Stop()
+        {
+            _moveComponent.MoveByRigidbodyVelocity(Vector2.zero);
+            gameObject.SetActive(false);
+        }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            this.OnCollisionEntered?.Invoke(this, collision);
+            OnCollision?.Invoke(this, collision.gameObject);
         }
 
-        public void SetVelocity(Vector2 velocity)
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            this.rigidbody2D.linearVelocity = velocity;
+            OnTriggerEnter?.Invoke(this, other.gameObject);
         }
 
-        public void SetPhysicsLayer(int physicsLayer)
-        {
-            this.gameObject.layer = physicsLayer;
-        }
-
-        public void SetPosition(Vector3 position)
-        {
-            this.transform.position = position;
-        }
-
-        public void SetColor(Color color)
-        {
-            this.spriteRenderer.color = color;
-        }
+        public int Damage    => _damage;
+        public bool IsPlayer => _isPlayer;
     }
 }

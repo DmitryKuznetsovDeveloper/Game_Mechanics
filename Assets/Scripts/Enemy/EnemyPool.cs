@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using Enemy.Agents;
 using UnityEngine;
 
-namespace ShootEmUp
+namespace Enemy
 {
     public sealed class EnemyPool : MonoBehaviour
     {

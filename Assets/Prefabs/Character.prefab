@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce164c84a74a425f8d2e82764aef9e34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePoint: {fileID: 3926786963072264220}
+  _firePoint: {fileID: 3926786963072264220}
 --- !u!114 &3926786964091724597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52112fd3e5414bf991b1d54804cb28f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlayer: 1
+  _isPlayer: 1
 --- !u!114 &3926786963732877808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,7 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce88fee201654f6e8064002ed15de594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 0.2
+  _speed: 5
 --- !u!114 &4920520678482679944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,8 +224,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bulletSystem: {fileID: 0}
-  _bulletConfig: {fileID: 11400000, guid: 7138ae5d32d814e0ca50c616c65ea105, type: 2}
+  _teamComponent: {fileID: 3926786964091724597}
   _weapon: {fileID: 3926786964091724598}
+  _bulletConfig: {fileID: 11400000, guid: dc938c1eaa05dd045b170276d72d20d0, type: 2}
 --- !u!114 &1310423582627572691
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ShootEmUp
+namespace Input
 {
     public sealed class InputReader : MonoBehaviour
     {
@@ -15,11 +15,11 @@ namespace ShootEmUp
 
         private void _ReadHorizontalInput()
         {
-            if (Input.GetKey(KeyCode.LeftArrow))
+            if (UnityEngine.Input.GetKey(KeyCode.LeftArrow))
             {
                 HorizontalDirection = -1f;
             }
-            else if (Input.GetKey(KeyCode.RightArrow))
+            else if (UnityEngine.Input.GetKey(KeyCode.RightArrow))
             {
                 HorizontalDirection = 1f;
             }
@@ -31,7 +31,7 @@ namespace ShootEmUp
 
         private void _ReadFireInput()
         {
-            FirePressed = Input.GetKeyDown(KeyCode.Space);
+            FirePressed = UnityEngine.Input.GetKeyDown(KeyCode.Space);
         }
     }
 }

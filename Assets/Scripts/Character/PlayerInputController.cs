@@ -1,6 +1,8 @@
+using Components;
+using Input;
 using UnityEngine;
 
-namespace ShootEmUp
+namespace Character
 {
     public sealed class PlayerInputController : MonoBehaviour
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ShootEmUp
+namespace Level
 {
     [RequireComponent(typeof(Renderer))]
     public sealed class LevelBackground : MonoBehaviour

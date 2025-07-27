@@ -1,24 +1,29 @@
-﻿using UnityEngine;
+﻿using Bullets;
+using UnityEngine;
 
-namespace ShootEmUp
+namespace Components
 {
+    [RequireComponent(typeof(WeaponComponent))]
     public sealed class AttackComponent : MonoBehaviour
     {
         [SerializeField] private BulletSystem _bulletSystem;
-        [SerializeField] private BulletConfig _bulletConfig;
+        [SerializeField] private TeamComponent _teamComponent;
         [SerializeField] private WeaponComponent _weapon;
-
+        [SerializeField] private BulletConfig _bulletConfig;
+        
         public void Fire()
         {
-            _bulletSystem.FlyBulletByArgs(new BulletSystem.Args
+            var data = new BulletData
             {
-                isPlayer = true,
-                physicsLayer = (int)_bulletConfig.physicsLayer,
-                color = _bulletConfig.color,
-                damage = _bulletConfig.damage,
-                position = _weapon.Position,
-                velocity = _weapon.Rotation * Vector3.up * _bulletConfig.speed
-            });
+                Position = _weapon.Position,
+                Rotation = _weapon.Rotation,
+                Speed    = _bulletConfig.Speed,
+                Damage   = _bulletConfig.Damage,
+                Layer    = (int)_bulletConfig.PhysicsLayer,
+                Color    = _bulletConfig.Color,
+                IsPlayer = _teamComponent.IsPlayer
+            };
+            _bulletSystem.Fire(data);
         }
     }
 }

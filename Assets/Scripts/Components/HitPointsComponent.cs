@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 
-namespace ShootEmUp
+namespace Components
 {
     public sealed class HitPointsComponent : MonoBehaviour
     {
-        public event Action<GameObject> OnHpEmpty;
+        public event Action<GameObject> OnDeath;
         
         [SerializeField] private int _hitPoints;
 
@@ -18,10 +18,8 @@ namespace ShootEmUp
         {
             _hitPoints = Mathf.Max(0, _hitPoints - damage);
             
-            if (_hitPoints.Equals(0))
-            {
-                OnHpEmpty?.Invoke(gameObject);
-            }
+            if (_hitPoints.Equals(0)) 
+                OnDeath?.Invoke(gameObject);
         }
     }
 }

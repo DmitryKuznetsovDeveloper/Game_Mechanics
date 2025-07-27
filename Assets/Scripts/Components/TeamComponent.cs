@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ShootEmUp
+namespace Components
 {
     public sealed class TeamComponent : MonoBehaviour
     {

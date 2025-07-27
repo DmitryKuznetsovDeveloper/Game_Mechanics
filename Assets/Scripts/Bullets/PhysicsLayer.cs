@@ -1,4 +1,4 @@
-namespace ShootEmUp
+namespace Bullets
 {
     public enum PhysicsLayer
     {

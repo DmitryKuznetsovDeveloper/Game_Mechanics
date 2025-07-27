@@ -1,23 +1,23 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace ShootEmUp
+namespace Bullets
 {
-    [CreateAssetMenu(
-        fileName = "BulletConfig",
-        menuName = "Bullets/New BulletConfig"
-    )]
+    [CreateAssetMenu(fileName = "BulletConfig", menuName = "ShootEmUp/BulletConfig")]
     public sealed class BulletConfig : ScriptableObject
     {
-        [SerializeField]
-        public PhysicsLayer physicsLayer;
+        [Header("Physics")]
+        [Tooltip("Слой физики для пули")]
+        public PhysicsLayer PhysicsLayer;
 
-        [SerializeField]
-        public Color color;
+        [Header("Visual")]
+        [Tooltip("Цвет спрайта пули")]
+        public Color Color = Color.white;
 
-        [SerializeField]
-        public int damage;
+        [Header("Combat")]
+        [Tooltip("Скорость полёта пули")]
+        public float Speed = 10f;
 
-        [SerializeField]
-        public float speed;
+        [Tooltip("Урон, наносимый пулей")]
+        public int Damage = 1;
     }
 }
