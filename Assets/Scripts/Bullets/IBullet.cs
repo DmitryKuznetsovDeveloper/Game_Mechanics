@@ -10,6 +10,8 @@ namespace Bullets
         void Stop();
         event Action<IBullet, GameObject> OnCollision;
         event Action<IBullet, GameObject> OnTriggerEnter;
+        int Damage { get; }
+        bool IsPlayer { get; }
     }
     
     public struct BulletData

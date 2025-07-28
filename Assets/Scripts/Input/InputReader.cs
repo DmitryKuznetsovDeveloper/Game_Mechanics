@@ -1,37 +1,23 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Input
 {
     public sealed class InputReader : MonoBehaviour
     {
-        public float HorizontalDirection { get; private set; }
-        public bool FirePressed { get; private set; }
+        public event Action OnFirePressed;
+        public Vector2 MoveDirection { get; private set; }
 
         private void Update()
         {
-            _ReadHorizontalInput();
-            _ReadFireInput();
-        }
-
-        private void _ReadHorizontalInput()
-        {
-            if (UnityEngine.Input.GetKey(KeyCode.LeftArrow))
-            {
-                HorizontalDirection = -1f;
-            }
-            else if (UnityEngine.Input.GetKey(KeyCode.RightArrow))
-            {
-                HorizontalDirection = 1f;
-            }
-            else
-            {
-                HorizontalDirection = 0f;
-            }
-        }
-
-        private void _ReadFireInput()
-        {
-            FirePressed = UnityEngine.Input.GetKeyDown(KeyCode.Space);
+            MoveDirection = Vector2.zero;
+            
+            var h = UnityEngine.Input.GetAxisRaw("Horizontal");
+            var v = UnityEngine.Input.GetAxisRaw("Vertical");
+            MoveDirection = new Vector2(h, v).normalized;
+            
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
+                OnFirePressed?.Invoke();
         }
     }
 }

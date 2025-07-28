@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Components
 {
-    public class WeaponComponent : MonoBehaviour
+    public sealed class WeaponComponent : MonoBehaviour
     {
         [SerializeField] private Transform _firePoint;
         

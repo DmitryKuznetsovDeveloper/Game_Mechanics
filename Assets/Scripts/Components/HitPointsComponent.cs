@@ -7,30 +7,30 @@ namespace Components
     {
         public event Action<GameObject> OnDeath;
         
-        [SerializeField] private int _hitPoints;
-        private int _initialHitPoints;
+        [SerializeField] private int _maxHitPoints = 5;
+        private int _currentHitPoints;
 
         private void Awake()
         {
-            _initialHitPoints = _hitPoints;
+            _currentHitPoints = _maxHitPoints;
         }
         
         public bool HasHitPoints()
         {
-            return _hitPoints > 0;
+            return _currentHitPoints > 0;
         }
 
         public void TakeDamage(int damage)
         {
-            _hitPoints = Mathf.Max(0, _hitPoints - damage);
+            _currentHitPoints = Mathf.Max(0, _currentHitPoints - damage);
             
-            if (_hitPoints.Equals(0)) 
+            if (_currentHitPoints.Equals(0)) 
                 OnDeath?.Invoke(gameObject);
         }
         
         public void ResetHitPoints()
-        {
-            _hitPoints = _initialHitPoints;
+        { 
+            _currentHitPoints = _maxHitPoints;
         }
     }
 }

@@ -37,6 +37,11 @@ namespace Enemy
             }
             return _attackCenter.position;
         }
+        
+        public void ReleaseAttackPosition(Vector2 point)
+        {
+            _usedAttackPoints.Remove(point);
+        }
 
         private bool IsFarEnoughFromOthers(Vector2 point)
         {
@@ -47,11 +52,6 @@ namespace Enemy
             }
             return true;
         }
-
-        public void ClearUsedPoints()
-        {
-            _usedAttackPoints.Clear();
-        }
         
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
@@ -60,7 +60,6 @@ namespace Enemy
             {
                 UnityEditor.Handles.color = new Color(1f, 0f, 0f, 0.25f);
                 UnityEditor.Handles.DrawSolidDisc(_attackCenter.position, Vector3.forward, _attackRadius);
-
                 Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(_attackCenter.position, _attackRadius);
             }

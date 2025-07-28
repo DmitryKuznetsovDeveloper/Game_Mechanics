@@ -12,7 +12,6 @@ namespace Components
 
         private BulletSystem _bulletSystem;
 
-        //TODO: пока нет DI 
         public void InjectDependencies(BulletSystem bulletSystem)
         {
             _bulletSystem = bulletSystem;
@@ -20,9 +19,25 @@ namespace Components
 
         public void Fire()
         {
-            Vector2 direction = _weapon.transform.up;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+            var bullet = InitBullet(_weapon.transform.up);
+            _bulletSystem.Fire(bullet);
+        }
+        
+        public void FireAtTarget(Vector2 targetPosition)
+        {
+            var direction = (targetPosition - _weapon.Position).normalized;
+            var bullet = InitBullet(direction);
+            _bulletSystem.Fire(bullet);
+            
+#if UNITY_EDITOR
+            Debug.DrawLine(_weapon.Position, targetPosition, Color.red, 1f);
+#endif
+        }
+
+        private BulletData InitBullet(Vector2 direction)
+        {
+            var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            var rotation = Quaternion.Euler(0f, 0f, angle);
 
             var data = new BulletData
             {
@@ -35,35 +50,7 @@ namespace Components
                 Color = _bulletConfig.Color,
                 IsPlayer = _teamComponent.IsPlayer
             };
-
-            _bulletSystem.Fire(data);
-        }
-
-        public void FireAtTarget(Vector2 targetPosition)
-        {
-            Vector2 firePosition = _weapon.Position;
-            Vector2 direction = (targetPosition - firePosition).normalized;
-
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
-
-            var data = new BulletData
-            {
-                Position = firePosition,
-                Rotation = rotation,
-                Direction = direction,
-                Speed = _bulletConfig.Speed,
-                Damage = _bulletConfig.Damage,
-                Layer = (int)_bulletConfig.PhysicsLayer,
-                Color = _bulletConfig.Color,
-                IsPlayer = _teamComponent.IsPlayer
-            };
-
-            _bulletSystem.Fire(data);
-            
-#if UNITY_EDITOR
-            Debug.DrawLine(firePosition, targetPosition, Color.red, 1f);
-#endif
+            return data;
         }
     }
 }

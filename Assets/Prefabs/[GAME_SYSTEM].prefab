@@ -112,7 +112,8 @@ MonoBehaviour:
   _world: {fileID: 0}
   _container: {fileID: 2125218449298873712}
   _prefab: {fileID: 8244303653581028508, guid: 87fe189881a524806800482ac8eaaa83, type: 3}
-  _initialCount: 10
+  _initialCount: 16
+  _maxConcurrentEnemies: 8
 --- !u!1 &5563713093219306995
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,15 +8,23 @@ namespace Enemy
     {
         private readonly Transform _world;
         private readonly GameObject _target;
-        private readonly EnemySystem _enemySystem;
         private readonly BulletSystem _bulletSystem;
+        private readonly EnemySystem _enemySystem;
+        private readonly EnemyPositions _positions;
 
-        public EnemyFactory(Transform world, GameObject target, BulletSystem bulletSystem, EnemySystem enemySystem)
+        public EnemyFactory(
+            Transform world,
+            GameObject target,
+            BulletSystem bulletSystem,
+            EnemySystem enemySystem,
+            EnemyPositions positions 
+        )
         {
             _world = world;
             _target = target;
             _bulletSystem = bulletSystem;
             _enemySystem = enemySystem;
+            _positions = positions;
         }
 
         public void SetupEnemy(EnemyView view, Vector2 spawnPos, Vector2 destination)
@@ -30,9 +38,9 @@ namespace Enemy
 
             if (enemy.TryGetComponent(out EnemyDeathHandler deathHandler))
                 deathHandler.InjectDependencies(_enemySystem);
-            
+
             if (enemy.TryGetComponent(out EnemyController controller))
-                controller.Initialize(destination, _target);
+                controller.Initialize(destination, _target, _positions);
         }
     }
 }

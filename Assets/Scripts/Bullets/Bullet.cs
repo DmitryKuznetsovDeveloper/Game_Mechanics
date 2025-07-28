@@ -9,17 +9,21 @@ namespace Bullets
     {
         public event Action<IBullet, GameObject> OnCollision;
         public event Action<IBullet, GameObject> OnTriggerEnter;
+        public int Damage    => _damage;
+        public bool IsPlayer => _isPlayer;
         
         [SerializeField] private SpriteRenderer _renderer;
         [SerializeField] private MoveComponent _moveComponent;
     
         private int _damage;
         private bool _isPlayer;
-        private float _speed;
         private Vector2 _direction;
 
         public void Initialize(BulletData data)
         {
+            OnCollision = null;
+            OnTriggerEnter = null;
+            
             transform.position = data.Position;
             transform.rotation = data.Rotation;
             _damage = data.Damage;
@@ -51,8 +55,5 @@ namespace Bullets
         {
             OnTriggerEnter?.Invoke(this, other.gameObject);
         }
-
-        public int Damage    => _damage;
-        public bool IsPlayer => _isPlayer;
     }
 }

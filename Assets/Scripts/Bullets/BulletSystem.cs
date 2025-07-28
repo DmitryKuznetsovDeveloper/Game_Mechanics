@@ -18,7 +18,7 @@ namespace Bullets
             var factory = new BulletFactory(pool);
             var collisionSystem = new BulletCollisionSystem();
             var damageSystem = new DamageSystem();
-            _bulletController = new BulletController(factory, collisionSystem, damageSystem);
+            _bulletController = new BulletController(factory, pool, collisionSystem, damageSystem);
         }
         
         public void Fire(BulletData data)

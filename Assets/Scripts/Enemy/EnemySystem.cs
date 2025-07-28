@@ -10,10 +10,12 @@ namespace Enemy
         [SerializeField] private Transform _world;
         [SerializeField] private Transform _container;
         [SerializeField] private EnemyView _prefab;
-        [SerializeField] private int _initialCount = 10;
+        [SerializeField] private int _initialCount = 16;
+        [SerializeField] private int _maxConcurrentEnemies = 10;
 
         private EnemyPool _pool;
         private EnemyFactory _factory;
+        private int _currentEnemyCount;
 
         private void Awake()
         {
@@ -24,17 +26,19 @@ namespace Enemy
         {
             StartCoroutine(SpawnRoutine());
         }
-        
+
         public void UnspawnEnemy(GameObject enemy)
         {
             if (enemy.TryGetComponent(out EnemyView view))
+            {
                 _pool.Unspawn(view);
+                _currentEnemyCount = Mathf.Max(0, _currentEnemyCount - 1);
+            }
         }
-        
-        //TODO: пока нет DI 
+
         public void InjectDependencies(BulletSystem bulletSystem, GameObject player)
         {
-            _factory = new EnemyFactory(_world, player, bulletSystem,this);
+            _factory = new EnemyFactory(_world, player, bulletSystem, this, _positions);
         }
 
         private System.Collections.IEnumerator SpawnRoutine()
@@ -42,12 +46,15 @@ namespace Enemy
             while (true)
             {
                 yield return new WaitForSeconds(1f);
-
+                
+                if (_currentEnemyCount >= _maxConcurrentEnemies)
+                    continue;
+                
                 var view = _pool.Spawn();
-                var spawn = _positions.RandomSpawnPosition().position;
+                var spawnPos = _positions.RandomSpawnPosition().position;
                 var dest = _positions.RandomAttackPosition();
-
-                _factory.SetupEnemy(view, spawn, dest);
+                _factory.SetupEnemy(view, spawnPos, dest);
+                _currentEnemyCount++; 
             }
         }
     }
