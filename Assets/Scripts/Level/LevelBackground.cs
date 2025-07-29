@@ -1,24 +1,27 @@
+using Core;
 using UnityEngine;
 
 namespace Level
 {
     [RequireComponent(typeof(Renderer))]
-    public sealed class LevelBackground : MonoBehaviour
-    { 
+    public sealed class LevelBackground : MonoBehaviour, IGameUpdateListener
+    {
         [SerializeField] private float _scrollSpeedY = 0.1f;
 
-        private Material backgroundMaterial;
-        private Vector2 offset;
+        private Material _backgroundMaterial;
+        private Vector2 _offset;
 
         private void Awake()
         {
-            backgroundMaterial = GetComponent<Renderer>().material;
+            ServiceLocator.Resolve<GameCycle>().AddListener(this);
+            
+            _backgroundMaterial = GetComponent<Renderer>().material;
         }
-
-        private void Update()
+        
+        public void OnUpdate(float deltaTime)
         {
-            offset.y += _scrollSpeedY * Time.deltaTime;
-            backgroundMaterial.mainTextureOffset = offset;
+            _offset.y += _scrollSpeedY * deltaTime;
+            _backgroundMaterial.mainTextureOffset = _offset;
         }
     }
 }

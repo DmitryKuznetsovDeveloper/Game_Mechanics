@@ -1,24 +1,21 @@
-﻿using ObjectPool;
+﻿using Core;
+using ObjectPool;
 using UnityEngine;
 
 namespace Bullets
 {
     public sealed class BulletSystem : MonoBehaviour
     {
-        [Header("Pool Settings")]
-        [SerializeField] private Transform _poolContainer;
-        [SerializeField] private int _initialPoolSize = 20;
-        [SerializeField] private Bullet _bulletPrefab;
-
         private BulletController _bulletController;
-
+        
         private void Awake()
         {
-            var pool = new ObjectPool<Bullet>(_bulletPrefab, _initialPoolSize, _poolContainer);
-            var factory = new BulletFactory(pool);
-            var collisionSystem = new BulletCollisionSystem();
-            var damageSystem = new DamageSystem();
-            _bulletController = new BulletController(factory, pool, collisionSystem, damageSystem);
+            _bulletController = new BulletController(
+                ServiceLocator.Resolve<IBulletFactory>(),
+                ServiceLocator.Resolve<IPool<Bullet>>(),
+                ServiceLocator.Resolve<IBulletCollisionSystem>(),
+                ServiceLocator.Resolve<IDamageSystem>()
+            );
         }
         
         public void Fire(BulletData data)

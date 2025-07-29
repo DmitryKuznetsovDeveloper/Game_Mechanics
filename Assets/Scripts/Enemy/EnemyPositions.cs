@@ -45,11 +45,13 @@ namespace Enemy
 
         private bool IsFarEnoughFromOthers(Vector2 point)
         {
-            foreach (var existing in _usedAttackPoints)
+            for (var index = 0; index < _usedAttackPoints.Count; index++)
             {
+                var existing = _usedAttackPoints[index];
                 if (Vector2.Distance(existing, point) < _minDistanceBetweenPoints)
                     return false;
             }
+
             return true;
         }
         

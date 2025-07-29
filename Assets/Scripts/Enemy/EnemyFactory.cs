@@ -1,46 +1,40 @@
-﻿using Bullets;
-using Components;
+﻿using Core;
 using UnityEngine;
 
 namespace Enemy
 {
-    public sealed class EnemyFactory
+    public sealed class EnemyFactory : IGameStartListener
     {
         private readonly Transform _world;
-        private readonly GameObject _target;
-        private readonly BulletSystem _bulletSystem;
-        private readonly EnemySystem _enemySystem;
-        private readonly EnemyPositions _positions;
+        
+        private GameObject _player;
+        private EnemyPositions _positions;
 
-        public EnemyFactory(
-            Transform world,
-            GameObject target,
-            BulletSystem bulletSystem,
-            EnemySystem enemySystem,
-            EnemyPositions positions 
-        )
+
+        public EnemyFactory(Transform world)
         {
             _world = world;
-            _target = target;
-            _bulletSystem = bulletSystem;
-            _enemySystem = enemySystem;
-            _positions = positions;
+        }
+        
+        public void OnStartGame()
+        {
+            _player = ServiceLocator.Resolve<GameObject>();
+            _positions = ServiceLocator.Resolve<EnemyPositions>();
         }
 
-        public void SetupEnemy(EnemyView view, Vector2 spawnPos, Vector2 destination)
+        public void SetupEnemy(EnemyView view)
         {
+            var spawnPos = _positions.RandomSpawnPosition().position;
+            var attackPos = _positions.RandomAttackPosition();
+            
             var enemy = view.Root;
             enemy.transform.SetParent(_world);
             enemy.transform.position = spawnPos;
 
-            if (enemy.TryGetComponent(out AttackComponent attack))
-                attack.InjectDependencies(_bulletSystem);
-
-            if (enemy.TryGetComponent(out EnemyDeathHandler deathHandler))
-                deathHandler.InjectDependencies(_enemySystem);
-
-            if (enemy.TryGetComponent(out EnemyController controller))
-                controller.Initialize(destination, _target, _positions);
+            if (enemy.TryGetComponent<EnemyController>(out var controller))
+            {
+                controller.Initialize(attackPos, _player, _positions);
+            }
         }
     }
 }

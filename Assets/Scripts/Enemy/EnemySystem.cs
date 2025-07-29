@@ -1,13 +1,10 @@
-﻿using Bullets;
+﻿using Core;
 using UnityEngine;
 
 namespace Enemy
 {
-    public sealed class EnemySystem : MonoBehaviour
+    public sealed class EnemySystem : MonoBehaviour, IGameStartListener
     {
-        [SerializeField] private BulletSystem _bulletSystem;
-        [SerializeField] private EnemyPositions _positions;
-        [SerializeField] private Transform _world;
         [SerializeField] private Transform _container;
         [SerializeField] private EnemyView _prefab;
         [SerializeField] private int _initialCount = 16;
@@ -19,26 +16,24 @@ namespace Enemy
 
         private void Awake()
         {
+            _factory = ServiceLocator.Resolve<EnemyFactory>();
+            ServiceLocator.Resolve<GameCycle>().AddListener(this);  
+            
             _pool = new EnemyPool(_prefab, _initialCount, _container);
         }
 
-        private void Start()
+        public void OnStartGame()
         {
             StartCoroutine(SpawnRoutine());
         }
 
         public void UnspawnEnemy(GameObject enemy)
         {
-            if (enemy.TryGetComponent(out EnemyView view))
-            {
-                _pool.Unspawn(view);
-                _currentEnemyCount = Mathf.Max(0, _currentEnemyCount - 1);
-            }
-        }
-
-        public void InjectDependencies(BulletSystem bulletSystem, GameObject player)
-        {
-            _factory = new EnemyFactory(_world, player, bulletSystem, this, _positions);
+            if (!enemy.TryGetComponent(out EnemyView view)) 
+                return;
+            
+            _pool.Unspawn(view);
+            _currentEnemyCount = Mathf.Max(0, _currentEnemyCount - 1);
         }
 
         private System.Collections.IEnumerator SpawnRoutine()
@@ -51,9 +46,7 @@ namespace Enemy
                     continue;
                 
                 var view = _pool.Spawn();
-                var spawnPos = _positions.RandomSpawnPosition().position;
-                var dest = _positions.RandomAttackPosition();
-                _factory.SetupEnemy(view, spawnPos, dest);
+                _factory.SetupEnemy(view);
                 _currentEnemyCount++; 
             }
         }

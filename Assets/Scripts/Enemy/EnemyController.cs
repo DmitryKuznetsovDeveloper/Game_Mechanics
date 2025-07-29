@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using Components;
+using Core;
 
 namespace Enemy
 {
-    public sealed class EnemyController : MonoBehaviour
+    public sealed class EnemyController : MonoBehaviour, IGameFixedUpdateListener
     {
         [SerializeField] private MoveComponent _moveComponent;
         [SerializeField] private AttackComponent _attackComponent;
@@ -17,6 +18,11 @@ namespace Enemy
         private float _dwellTimer;
         private EnemyPositions _positions;
 
+        private void Awake()
+        {
+            ServiceLocator.Resolve<GameCycle>().AddListener(this);
+        }
+
         public void Initialize(Vector2 destination, GameObject target, EnemyPositions positions)
         {
             _destination = destination;
@@ -27,9 +33,9 @@ namespace Enemy
             _dwellTimer = _dwellTime;
         }
 
-        private void FixedUpdate()
+        public void OnFixedUpdate(float fixedDeltaTime)
         {
-            if (_reached) TryAttack();
+            if (_reached) TryAttack(fixedDeltaTime);
             else TryMove();
         }
 
@@ -49,29 +55,31 @@ namespace Enemy
             }
         }
 
-        private void TryAttack()
+        private void TryAttack(float fixedDeltaTime)
         {
             if (!_target ||
                 !_target.TryGetComponent<HitPointsComponent>(out var hp) ||
                 !hp.HasHitPoints())
                 return;
 
-            _fireTimer -= Time.fixedDeltaTime;
+            _fireTimer -= fixedDeltaTime;
+            
             if (_fireTimer <= 0f)
             {
                 _attackComponent.FireAtTarget(_target.transform.position);
                 _fireTimer = _fireCooldown;
             }
 
-            _dwellTimer -= Time.fixedDeltaTime;
-            if (_dwellTimer <= 0f)
-            {
-                _positions.ReleaseAttackPosition(_destination);
-                _destination = _positions.RandomAttackPosition();
-                _reached = false;
-                _dwellTimer = _dwellTime;
-                _fireTimer = _fireCooldown;
-            }
+            _dwellTimer -= fixedDeltaTime;
+            
+            if (!(_dwellTimer <= 0f)) 
+                return;
+            
+            _positions.ReleaseAttackPosition(_destination);
+            _destination = _positions.RandomAttackPosition();
+            _reached = false;
+            _dwellTimer = _dwellTime;
+            _fireTimer = _fireCooldown;
         }
     }
 }
