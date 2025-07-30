@@ -125,11 +125,11 @@ namespace Core
 
         private enum GameState
         {
-            NONE,
-            STARTING,
-            PLAYING,
-            PAUSED,
-            FINISHED
+            NONE = 0,
+            STARTING = 1,
+            PLAYING = 2,
+            PAUSED = 3,
+            FINISHED = 4
         }
     }
 }

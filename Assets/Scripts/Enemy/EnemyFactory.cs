@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using Character;
+using Core;
 using UnityEngine;
 
 namespace Enemy
@@ -7,7 +8,7 @@ namespace Enemy
     {
         private readonly Transform _world;
         
-        private GameObject _player;
+        private CharacterView _player;
         private EnemyPositions _positions;
 
 
@@ -18,7 +19,7 @@ namespace Enemy
         
         public void OnStartGame()
         {
-            _player = ServiceLocator.Resolve<GameObject>();
+            _player = ServiceLocator.Resolve<CharacterView>();
             _positions = ServiceLocator.Resolve<EnemyPositions>();
         }
 
@@ -33,7 +34,7 @@ namespace Enemy
 
             if (enemy.TryGetComponent<EnemyController>(out var controller))
             {
-                controller.Initialize(attackPos, _player, _positions);
+                controller.Initialize(attackPos, _player.Root, _positions);
             }
         }
     }

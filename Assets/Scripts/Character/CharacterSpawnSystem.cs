@@ -5,18 +5,18 @@ namespace Character
     public class CharacterSpawnSystem
 
     {
-        private readonly GameObject _playerPrefab;
+        private readonly CharacterView _playerPrefab;
         private readonly Transform _spawnPoint;
 
-        public CharacterSpawnSystem(GameObject playerPrefab, Transform spawnPoint)
+        public CharacterSpawnSystem(CharacterView playerPrefab, Transform spawnPoint)
         {
             _playerPrefab = playerPrefab;
             _spawnPoint = spawnPoint;
         }
 
-        public GameObject SpawnPlayer()
+        public CharacterView SpawnPlayer()
         {
-            return Object.Instantiate(_playerPrefab, _spawnPoint.position, _spawnPoint.rotation);
+            return Object.Instantiate(_playerPrefab.gameObject, _spawnPoint.position, _spawnPoint.rotation).GetComponent<CharacterView>();
         }
     }
 }
