@@ -14,9 +14,9 @@ namespace Character
             _spawnPoint = spawnPoint;
         }
 
-        public CharacterView SpawnPlayer()
+        public GameObject SpawnPlayer()
         {
-            return Object.Instantiate(_playerPrefab.gameObject, _spawnPoint.position, _spawnPoint.rotation).GetComponent<CharacterView>();
+            return Object.Instantiate(_playerPrefab.gameObject, _spawnPoint.position, _spawnPoint.rotation);
         }
     }
 }
