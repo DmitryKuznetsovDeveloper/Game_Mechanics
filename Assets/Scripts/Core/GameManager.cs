@@ -35,26 +35,5 @@ namespace Core
             _gameCycle.FinishGame();
             ServiceLocator.Clear();
         }
-
-        public void Update()
-        {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                StartGame();
-            }
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                FinishGame();
-            }
-            
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                PauseGame();
-            }
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                ResumeGame();
-            }
-        }
     }
 }

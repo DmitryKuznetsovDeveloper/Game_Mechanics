@@ -44,7 +44,8 @@ namespace Core
             ServiceLocator.Register(spawnSystem);
 
             var character = spawnSystem.SpawnPlayer();
-            ServiceLocator.Register(character);
+            var charView = character.GetComponent<CharacterView>();
+            ServiceLocator.Register(charView);
 
             //Bullets
             ServiceLocator.Register(_bulletSystem);

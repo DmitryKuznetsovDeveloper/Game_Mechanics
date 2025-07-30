@@ -8,6 +8,7 @@ namespace Enemy
     {
         [SerializeField] private MoveComponent _moveComponent;
         [SerializeField] private AttackComponent _attackComponent;
+        [SerializeField] private float _stopDistance = 0.25f;
         [SerializeField] private float _fireCooldown = 2f;
         [SerializeField] private float _dwellTime = 6f;
 
@@ -44,7 +45,7 @@ namespace Enemy
             Vector2 current = transform.position;
             Vector2 delta = _destination - current;
 
-            if (delta.sqrMagnitude < 0.25f * 0.25f)
+            if (delta.sqrMagnitude < _stopDistance * _stopDistance)
             {
                 _reached = true;
                 _moveComponent.MoveByRigidbodyVelocity(Vector2.zero);
