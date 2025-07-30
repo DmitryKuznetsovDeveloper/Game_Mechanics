@@ -16,7 +16,7 @@ namespace Core
         [SerializeField] private InputReader _inputReader;
 
         [Header("Character Settings")] [Space]
-        [SerializeField] private CharacterView _playerPrefab;
+        [SerializeField] private GameObject _playerPrefab;
         [SerializeField] private Transform _spawnPoint;
 
 
