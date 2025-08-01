@@ -1,0 +1,17 @@
+﻿using Core;
+using GameCycle;
+using UnityEngine;
+using Zenject;
+
+namespace Installers
+{
+    [CreateAssetMenu(fileName = "GameCoreInstaller", menuName = "Installers/GameCoreInstaller")]
+    public class GameCoreInstaller : ScriptableObjectInstaller
+    {
+        public override void InstallBindings()
+        {
+            Container.Bind<GameManager>().AsSingle();
+            Container.BindInterfacesTo<GameController>().AsCached();
+        }
+    }
+}
