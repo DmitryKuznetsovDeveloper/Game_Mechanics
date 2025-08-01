@@ -2,12 +2,18 @@ using UnityEngine;
 
 namespace Components
 {
-    public sealed class WeaponComponent : MonoBehaviour
+    public sealed class WeaponComponent
     {
-        [SerializeField] private Transform _firePoint;
-        
-        public Vector2 Position => !_firePoint ? transform.position : _firePoint.position;
+        private readonly Transform _firePoint;
 
-        public Quaternion Rotation => !_firePoint ? transform.rotation : _firePoint.rotation;
+        public WeaponComponent(Transform firePoint)
+        {
+            _firePoint = firePoint;
+        }
+
+        public Vector2 Position => _firePoint.position;
+        public Transform Transform => _firePoint.transform;
+
+        public Quaternion Rotation => _firePoint.rotation;
     }
 }

@@ -10,6 +10,7 @@ namespace Installers
     {
         public override void InstallBindings()
         {
+            //Game Cycle
             Container.Bind<GameManager>().AsSingle();
             Container.BindInterfacesTo<GameController>().AsCached();
         }

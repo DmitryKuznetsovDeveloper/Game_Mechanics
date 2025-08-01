@@ -1,21 +1,16 @@
 ﻿using Components;
-using Core;
-using UnityEngine;
+using GameCycle;
 
 namespace Character
 {
-    [RequireComponent(typeof(HitPointsComponent))]
-    public sealed class CharacterDeathHandler : MonoBehaviour,IGameStartListener, IGameFinishListener
+    public sealed class CharacterDeathHandler : IGameStartListener, IGameFinishListener
     {
-        private HitPointsComponent _hitPointsComponent;
-        private GameManager _gameManager;
+        private readonly HitPointsComponent _hitPointsComponent;
+        private readonly GameManager _gameManager;
 
-        private void Awake()
+        public CharacterDeathHandler(HitPointsComponent hitPointsComponent)
         {
-            _gameManager = ServiceLocator.Resolve<GameManager>();
-            ServiceLocator.Resolve<GameCycle>().AddListener(this);
-            
-            _hitPointsComponent = GetComponent<HitPointsComponent>();
+            _hitPointsComponent = hitPointsComponent;
         }
 
         public void OnStartGame()
@@ -27,8 +22,8 @@ namespace Character
         {
             _hitPointsComponent.OnDeath -= OnCharacterDeath;
         }
-        
-        private void OnCharacterDeath(GameObject _)
+
+        private void OnCharacterDeath()
         {
             _gameManager.FinishGame();
         }

@@ -1,53 +1,54 @@
-using Core;
+using GameCycle;
 using UnityEngine;
 
-namespace Components
+public sealed class MoveComponent : IGamePauseListener, IGameResumeListener, IGameFinishListener
 {
-    
-    [RequireComponent(typeof(Rigidbody2D))]
-    public sealed class MoveComponent : MonoBehaviour, IGamePauseListener,IGameResumeListener, IGameFinishListener
+    private float _speed;
+    private Vector2 _storedVelocity;
+    private readonly Rigidbody2D _rb;
+    private RigidbodyConstraints2D _originalConstraints;
+
+    public MoveComponent(float speed, Rigidbody2D rb)
     {
-        [SerializeField] private float _speed = 5.0f;
-        
-        private Rigidbody2D _rb;
-        private Vector2 _storedVelocity;
+        _speed = speed;
+        _rb = rb;
+        _originalConstraints = _rb.constraints;
+    }
 
-        private void Awake()
-        {
-            ServiceLocator.Resolve<GameCycle>().AddListener(this);
-            
-            _rb = GetComponent<Rigidbody2D>();
-        }
-        
-        public void SetSpeed(float speed)
-        {
-            _speed = speed;
-        }
-        
-        public void MoveByRigidbodyVelocity(Vector2 direction)
-        {
-            _rb.linearVelocity = direction * _speed;
-        }
+    public void SetSpeed(float speed) => _speed = speed;
 
-        public void OnPause()
-        {
-            _storedVelocity = _rb.linearVelocity;
-            StopMove();
-        }
-        
-        public void OnResume()
-        {
-            _rb.linearVelocity = _storedVelocity;
-        }
+    public void MoveByRigidbodyVelocity(Vector2 direction)
+    {
+        _rb.linearVelocity = direction * _speed;
+    }
 
-        public void OnFinishGame()
-        {
-            _rb.linearVelocity = Vector2.zero;
-        }
-        
-        private void StopMove()
-        {
-            _rb.linearVelocity = Vector2.zero;
-        }
+    public void OnPauseGame()
+    {
+        _storedVelocity = _rb.linearVelocity;
+        Freeze();
+    }
+
+    public void OnResumeGame()
+    {
+        Unfreeze();
+        _rb.linearVelocity = _storedVelocity;
+    }
+
+    public void OnFinishGame()
+    {
+        Freeze();
+    }
+
+    public void Freeze()
+    {
+        _originalConstraints = _rb.constraints;
+        _rb.linearVelocity = Vector2.zero;
+        _rb.angularVelocity = 0f;
+        _rb.constraints = RigidbodyConstraints2D.FreezeAll;
+    }
+
+    public void Unfreeze()
+    {
+        _rb.constraints = _originalConstraints;
     }
 }

@@ -1,10 +1,14 @@
-using UnityEngine;
-
 namespace Components
 {
-    public sealed class TeamComponent : MonoBehaviour
+    public sealed class TeamComponent
     {
-        [SerializeField] private bool _isPlayer;
+        private bool _isPlayer;
+        
+        public TeamComponent(bool isPlayer)
+        {
+            _isPlayer = isPlayer;
+        }
+
         public bool IsPlayer
         {
             get => _isPlayer;

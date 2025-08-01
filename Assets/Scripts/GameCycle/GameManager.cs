@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using Utils;
 
 namespace GameCycle
 {
@@ -42,7 +42,7 @@ namespace GameCycle
             
             State = GameState.PLAY;
             OnGameStarted?.Invoke();
-            Debug.Log("Game Started");
+            DebugUtil.Log("Game Started");
         }
 
         public void PauseGame()
@@ -62,7 +62,7 @@ namespace GameCycle
             
             State = GameState.PAUSE;
             OnGamePaused?.Invoke();
-            Debug.Log("Game Paused");
+            DebugUtil.Log("Game Paused");
         }
         
         public void ResumeGame()
@@ -82,7 +82,7 @@ namespace GameCycle
             
             State = GameState.PLAY;
             OnGameResumed?.Invoke();
-            Debug.Log("Game Resumed");
+            DebugUtil.Log("Game Resumed");
         }
         
         public void FinishGame()
@@ -102,7 +102,7 @@ namespace GameCycle
             
             State = GameState.FINISH;
             OnGameFinished?.Invoke();
-            Debug.Log("Game Finished");
+            DebugUtil.Log("Game Finished");
         }
     }
 }

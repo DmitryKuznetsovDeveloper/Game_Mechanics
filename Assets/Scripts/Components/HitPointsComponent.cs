@@ -1,17 +1,17 @@
 using System;
-using UnityEngine;
 
 namespace Components
 {
-    public sealed class HitPointsComponent : MonoBehaviour
+    public sealed class HitPointsComponent
     {
-        public event Action<GameObject> OnDeath;
+        public event Action OnDeath;
 
-        [SerializeField] private int _maxHitPoints = 5;
         private int _currentHitPoints;
+        private readonly int _maxHitPoints;
 
-        private void Awake()
+        public HitPointsComponent(int maxHitPoints)
         {
+            _maxHitPoints = maxHitPoints;
             _currentHitPoints = _maxHitPoints;
         }
 
@@ -25,10 +25,10 @@ namespace Components
             if (_currentHitPoints <= 0)
                 return;
 
-            _currentHitPoints = Mathf.Max(0, _currentHitPoints - damage);
+            _currentHitPoints = Math.Max(0, _currentHitPoints - damage);
 
             if (_currentHitPoints == 0)
-                OnDeath?.Invoke(gameObject);
+                OnDeath?.Invoke();
         }
 
         public void ResetHitPoints()

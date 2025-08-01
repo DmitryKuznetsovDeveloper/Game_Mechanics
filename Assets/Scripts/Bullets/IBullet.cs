@@ -6,7 +6,7 @@ namespace Bullets
     public interface IBullet
     {
         void Initialize(BulletData data);
-        void Fire();
+        void Move();
         void Stop();
         event Action<IBullet, GameObject> OnCollision;
         event Action<IBullet, GameObject> OnTriggerEnter;

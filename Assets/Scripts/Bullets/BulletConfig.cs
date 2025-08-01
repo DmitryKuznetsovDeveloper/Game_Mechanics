@@ -2,22 +2,18 @@
 
 namespace Bullets
 {
-    [CreateAssetMenu(fileName = "BulletConfig", menuName = "ShootEmUp/BulletConfig")]
+    [CreateAssetMenu(menuName = "Configs/BulletConfig")]
     public sealed class BulletConfig : ScriptableObject
     {
-        [Header("Physics")]
-        [Tooltip("Слой физики для пули")]
-        public PhysicsLayer PhysicsLayer;
-
-        [Header("Visual")]
-        [Tooltip("Цвет спрайта пули")]
-        public Color Color = Color.white;
-
-        [Header("Combat")]
-        [Tooltip("Скорость полёта пули")]
-        public float Speed = 10f;
-
-        [Tooltip("Урон, наносимый пулей")]
-        public int Damage = 1;
+        [Header("Main Parameters")] 
+        [SerializeField] private float _speed = 10f; 
+        [SerializeField] private int _damage = 1; 
+        [SerializeField] private PhysicsLayer _physicsLayer; 
+        [SerializeField] private Color _color = Color.white;
+        
+        public float Speed => _speed;
+        public int Damage => _damage;
+        public PhysicsLayer PhysicsLayer => _physicsLayer;
+        public Color Color => _color;
     }
 }
