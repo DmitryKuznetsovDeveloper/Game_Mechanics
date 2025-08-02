@@ -24,8 +24,7 @@ namespace Input
         private Vector2 GetInputDirection()
         {
             var h = UnityEngine.Input.GetAxisRaw("Horizontal");
-            var v = UnityEngine.Input.GetAxisRaw("Vertical");
-            var direction = new Vector2(h, v);
+            var direction = new Vector2(h, 0);
             return direction.sqrMagnitude > 0 ? direction.normalized : Vector2.zero;
         }
 

@@ -21,6 +21,25 @@ public sealed class MoveComponent : IGamePauseListener, IGameResumeListener, IGa
     {
         _rb.linearVelocity = direction * _speed;
     }
+    
+    public void MoveByRigidbodyVelocityClamped(Vector2 direction, float minX, float maxX)
+    {
+        var pos = _rb.position;
+        var clampedX = Mathf.Clamp(pos.x, minX, maxX);
+
+        direction.y = 0f;
+        
+        if (Mathf.Approximately(pos.x, minX) && direction.x < 0f)
+            direction.x = 0f;
+        
+        if (Mathf.Approximately(pos.x, maxX) && direction.x > 0f)
+            direction.x = 0f;
+
+        _rb.linearVelocity = direction * _speed;
+        
+        if (!Mathf.Approximately(pos.x, clampedX))
+            _rb.position = new Vector2(clampedX, pos.y);
+    }
 
     public void OnPauseGame()
     {
