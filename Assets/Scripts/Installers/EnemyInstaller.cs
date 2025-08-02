@@ -1,36 +1,39 @@
-﻿using Player;
+﻿using Enemys;
+using GameCycle;
 using Systems;
 using UnityEngine;
 using Zenject;
 
-namespace Enemys
+namespace Installers
 {
-    public class EnemyInstaller : MonoInstaller
+    public sealed class EnemyInstaller
     {
-        [SerializeField] private EnemyConfig _defaultConfig;
-        [SerializeField] private EnemyView _enemyPrefab;
-        [SerializeField] private Transform _enemiesContainer;
+        private readonly EnemyConfig _defaultConfig;
+        private readonly Transform _enemySpawnPoint;
 
-        public override void InstallBindings()
+        public EnemyInstaller(EnemyConfig defaultConfig, Transform enemySpawnPoint)
         {
-            Container.BindInstance(_defaultConfig).WithId("DefaultEnemyConfig");
+            _defaultConfig = defaultConfig;
+            _enemySpawnPoint = enemySpawnPoint;
+        }
 
-            Container.BindMemoryPool<EnemyView, EnemyView.Pool>()
+        private const string ENEMY_PREFAB_PATH = "Objects/Enemy";
+
+        public void InstallBindings(DiContainer container)
+        {
+            container.BindInstance(_defaultConfig).WithId("DefaultEnemyConfig");
+
+            container.BindMemoryPool<EnemyView, EnemyView.Pool>()
                 .WithInitialSize(16)
-                .FromComponentInNewPrefab(_enemyPrefab)
-                .UnderTransform(_enemiesContainer);
-            Container.Bind<AttackSystem>().AsSingle();
-            Container.BindFactory<EnemyView, AttackSystem, EnemyConfig, Transform, Enemy, Enemy.Factory>();
-            
-            
-            var prefab = Resources.Load<GameObject>("Objects/Character");
-            // 2. Спавним его на сцену в нужной позиции
-            var go = GameObject.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+                .FromComponentInNewPrefabResource(ENEMY_PREFAB_PATH)
+                .UnderTransform(_enemySpawnPoint);
 
-            // 3. Если нужно, можем получить GameObjectContext
-            var context = go.GetComponent<Zenject.GameObjectContext>();
-            var character = context.Container.Resolve<PlayerFacade>();
-            Container.BindInterfacesAndSelfTo<EnemySystem>().AsSingle().WithArguments(character);
+            container.Bind<AttackSystem>().AsSingle();
+
+            container.BindFactory<GameManager, AttackSystem, EnemyView, 
+                EnemyConfig, EnemyFacade, EnemyFacade.Factory>();
+            
+            container.BindInterfacesAndSelfTo<EnemySystem>().AsSingle();
         }
     }
 }

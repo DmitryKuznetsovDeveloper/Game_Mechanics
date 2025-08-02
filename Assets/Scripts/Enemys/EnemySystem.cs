@@ -9,50 +9,55 @@ namespace Enemys
 {
     public class EnemySystem : IGameStartListener, IGameTickable
     {
-        private readonly EnemyView.Pool _viewPool;
-        private readonly Enemy.Factory _enemyFactory;
+        private readonly GameManager _gameManager;
         private readonly AttackSystem _attackSystem;
         private readonly EnemyConfig _defaultConfig;
         private readonly PlayerFacade _player;
+        private readonly EnemyView.Pool _viewPool;
+        private readonly EnemyFacade.Factory _enemyFactory;
 
-        private readonly List<Enemy> _enemies = new();
+        private readonly List<EnemyFacade> _enemies = new();
 
         public EnemySystem(
-            EnemyView.Pool viewPool,
-            Enemy.Factory enemyFactory,
-            AttackSystem attackSystem,
-            [Inject(Id = "DefaultEnemyConfig")] EnemyConfig defaultConfig,
-            PlayerFacade player)
+            GameManager gameManager, 
+            AttackSystem attackSystem, 
+            [Inject(Id = "DefaultEnemyConfig")] 
+            EnemyConfig defaultConfig,
+            PlayerFacade player, 
+            EnemyView.Pool viewPool, 
+            EnemyFacade.Factory enemyFactory)
         {
-            _viewPool = viewPool;
-            _enemyFactory = enemyFactory;
+            _gameManager = gameManager;
             _attackSystem = attackSystem;
             _defaultConfig = defaultConfig;
             _player = player;
+            _viewPool = viewPool;
+            _enemyFactory = enemyFactory;
         }
+        
         public void OnStartGame()
         {
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 Vector2 spawnPos = new Vector2(Random.Range(-5f, 5f), 8f);
                 Vector2 attackPos = new Vector2(Random.Range(-5f, 5f), Random.Range(1f, 6f));
                 SpawnEnemy(spawnPos, attackPos, _defaultConfig);
             }
         }
-        
+
         public void Tick(float deltaTime)
         {
-            float dt = Time.deltaTime;
-            for (int i = _enemies.Count - 1; i >= 0; i--)
+            var dt = Time.deltaTime;
+            for (var i = _enemies.Count - 1; i >= 0; i--)
             {
                 var enemy = _enemies[i];
                 enemy.OnFixedUpdateAI(dt);
 
-                if (!enemy.IsAlive)
-                {
-                    DespawnEnemy(enemy);
-                    _enemies.RemoveAt(i);
-                }
+                if (enemy.HasHitPoints())
+                    continue;
+
+                DespawnEnemy(enemy);
+                _enemies.RemoveAt(i);
             }
         }
 
@@ -60,22 +65,16 @@ namespace Enemys
         {
             var view = _viewPool.Spawn();
             view.Transform.position = spawnPosition;
-            var firePoint = view.FirePoint;
 
-            var enemy = _enemyFactory.Create(
-                view,
-                _attackSystem,
-                config,
-                firePoint
-            );
+            var enemy = _enemyFactory.Create(_gameManager,_attackSystem, view, config);
             enemy.Initialize(attackDestination, _player);
             _enemies.Add(enemy);
         }
 
-        public void DespawnEnemy(Enemy enemy)
+        public void DespawnEnemy(EnemyFacade enemyFacade)
         {
-            enemy.Die();
-            _viewPool.Despawn(enemy.View);
+            enemyFacade.Die();
+            _viewPool.Despawn(enemyFacade.EnemyView);
         }
     }
 }

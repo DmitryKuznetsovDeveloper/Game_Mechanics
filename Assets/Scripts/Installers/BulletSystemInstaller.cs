@@ -1,26 +1,32 @@
 ﻿using Bullets;
+using UnityEngine;
 using Zenject;
 
 namespace Installers
 {
-    public class BulletSystemInstaller : MonoInstaller
+    public class BulletSystemInstaller
     {
+        private readonly Transform _spawnPoint;
+
+        public BulletSystemInstaller(Transform spawnPoint)
+        {
+            _spawnPoint = spawnPoint;
+        }
+
         private const string BULLET_PREFAB_PATH = "Objects/Bullet";
 
-        public override void InstallBindings()
+        public void InstallBindings(DiContainer container)
         {
-            //Factory and Pool
-            Container.BindFactory<BulletData, Bullet, Bullet.Factory>()
+            container.BindFactory<BulletData, Bullet, Bullet.Factory>()
                 .FromPoolableMemoryPool<BulletData, Bullet, Bullet.Pool>(poolBinder => poolBinder
                     .WithInitialSize(30)
                     .FromComponentInNewPrefabResource(BULLET_PREFAB_PATH)
                     .UnderTransformGroup("Bullets"));
             
-            //Main System
-            Container.Bind<IBulletCollisionSystem>().To<BulletCollisionSystem>().AsSingle();
-            Container.Bind<IDamageSystem>().To<DamageSystem>().AsSingle();
-            Container.Bind<BulletController>().AsSingle();
-            Container.Bind<BulletSystem>().AsSingle();
+            container.Bind<IBulletCollisionSystem>().To<BulletCollisionSystem>().AsSingle();
+            container.Bind<IDamageSystem>().To<DamageSystem>().AsSingle();
+            container.Bind<BulletController>().AsSingle();
+            container.Bind<BulletSystem>().AsSingle();
         }
     }
 }

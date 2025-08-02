@@ -28,7 +28,6 @@ namespace Player
 
         private readonly GameManager _gameManager;
         private readonly PlayerView _playerView;
-        private readonly PlayerConfig _playerConfig;
         private readonly TeamComponent _teamComponent;
         private readonly MoveComponent _moveComponent;
         private readonly WeaponComponent _weaponComponent;
@@ -36,12 +35,14 @@ namespace Player
         private readonly HitPointsComponent _hitPointsComponent;
         private readonly PlayerDeathHandler _playerDeathHandler;
 
-        public PlayerFacade(GameManager gameManager, PlayerView playerView, PlayerConfig playerConfig)
+        public PlayerFacade(
+            GameManager gameManager, 
+            PlayerView playerView, 
+            PlayerConfig playerConfig)
         {
             _gameManager = gameManager;
             _playerView = playerView;
-            _playerConfig = playerConfig;
-
+            
             _teamComponent = new (playerConfig.IsPlayer);
             _moveComponent = new (playerConfig.Speed,playerView.Rigidbody);
             _weaponComponent = new(playerView.FirePoint);
@@ -53,22 +54,22 @@ namespace Player
             _gameManager.AddListener(_playerDeathHandler);
         }
 
-        public void SetSpeed(float speed) => _moveComponent.SetSpeed(speed);
-
         public void MoveByRigidbodyVelocity(Vector2 direction) => _moveComponent.MoveByRigidbodyVelocity(direction);
 
         public void MoveByRigidbodyVelocityClamped(Vector2 direction, float minX, float maxX) =>
             _moveComponent.MoveByRigidbodyVelocityClamped(direction, minX, maxX);
-        
-        public BulletData MakeBullet(Vector2 direction) => _attackComponent.MakeBullet(direction);
+        public void SetSpeed(float speed) => _moveComponent.SetSpeed(speed);
+
         public void Freeze() => _moveComponent.Freeze();
-        
+
         public void Unfreeze() => _moveComponent.Unfreeze();
 
+        public BulletData MakeBullet(Vector2 direction) => _attackComponent.MakeBullet(direction);
+        
         public bool HasHitPoints() => _hitPointsComponent.HasHitPoints();
         
-        public void TakeDamage(int damage) => _hitPointsComponent.TakeDamage(damage);
-
         public void ResetHitPoints() => _hitPointsComponent.ResetHitPoints();
+
+        public void TakeDamage(int damage) => _hitPointsComponent.TakeDamage(damage);
     }
 }

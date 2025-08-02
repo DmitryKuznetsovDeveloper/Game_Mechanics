@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using Enemys;
+using Player;
 using UnityEngine;
 using Zenject;
 
@@ -9,10 +10,17 @@ namespace Installers
         [Header("Character Settings")] 
         [SerializeField] private PlayerConfig _playerConfig;
         [SerializeField] private Transform _playerSpawnPoint;
-        
-        [Header("UI Settings")] 
+
+        [Header("UI Settings")]
         [SerializeField] private int _countdownTime;
         [SerializeField] private Transform _uiSpawnPoint;
+
+        [Header("Enemy Settings")] 
+        [SerializeField] private EnemyConfig _defaultConfig;
+        [SerializeField] private Transform _enemySpawnPoint;
+
+        [Header("Bullet Settings")] 
+        [SerializeField] private Transform _bulletSpawnPoint;
 
         public override void InstallBindings()
         {
@@ -20,7 +28,16 @@ namespace Installers
             var playerInstaller = new PlayerInstaller(_playerConfig, _playerSpawnPoint);
             playerInstaller.InstallBindings(Container);
 
-            var uiInstaller = new UIInstaller(_countdownTime,_uiSpawnPoint);
+            //Bullet
+            var bulletSystem = new BulletSystemInstaller(_bulletSpawnPoint);
+            bulletSystem.InstallBindings(Container);
+
+            //Enemys
+            var enemyInstaller = new EnemyInstaller(_defaultConfig, _enemySpawnPoint);
+            enemyInstaller.InstallBindings(Container);
+
+            //UI
+            var uiInstaller = new UIInstaller(_countdownTime, _uiSpawnPoint);
             uiInstaller.InstallBindings(Container);
         }
     }
