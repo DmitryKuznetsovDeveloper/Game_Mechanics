@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using Components;
+using Core;
 using GameCycle;
 using UnityEngine;
 using Zenject;
@@ -12,7 +13,10 @@ namespace Installers
         {
             //Game Cycle
             Container.Bind<GameManager>().AsSingle();
-            Container.BindInterfacesTo<GameController>().AsCached();
+            Container.BindInterfacesTo<GameController>().AsSingle();
+            
+            Container.Bind<TimerComponent>()
+                .AsSingle();
         }
     }
 }

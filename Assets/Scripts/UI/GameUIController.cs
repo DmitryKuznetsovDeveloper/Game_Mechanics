@@ -1,103 +1,99 @@
-﻿using System.Collections;
-using Core;
-using TMPro;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+﻿using System;
+using System.Threading;
+using Components;
+using Cysharp.Threading.Tasks;
+using GameCycle;
+using Zenject;
 
 namespace UI
 {
-    public class GameUIController : MonoBehaviour, IGameFinishListener
+    public class GameUIController : IInitializable, IDisposable, IGameStartListener, IGameFinishListener
     {
-        [Header("UI Elements")]
-        [SerializeField] private Button _startButton;
-        [SerializeField] private Button _pauseButton;
-        [SerializeField] private Button _resumeButton;
-        [SerializeField] private TMP_Text _countdownText;
+        private readonly GameUIView _view;
+        private readonly GameManager _gameManager;
+        private readonly TimerComponent _timer;
+        readonly int _countdownTime;
 
-        [Header("Timer")]
-        [SerializeField] private float _countdownTime = 3f;
+        CancellationTokenSource _cts;
 
-        private GameManager _gameManager;
-        private Coroutine _countdownRoutine;
-
-        private void Awake()
+        [Inject]
+        public GameUIController(
+            GameUIView view,
+            TimerComponent timer,
+            GameManager gameManager,
+            [Inject(Id = "UI_CountdownTime")] int countdownTime)
         {
-            _gameManager = ServiceLocator.Resolve<GameManager>();
-            ServiceLocator.Resolve<GameCycle>().AddListener(this);
-
-            _startButton.onClick.AddListener(HandleStartClicked);
-            _pauseButton.onClick.AddListener(HandlePauseClicked);
-            _resumeButton.onClick.AddListener(HandleResumeClicked);
-
-            ShowOnly(_startButton);
-            _countdownText.gameObject.SetActive(false);
+            _view = view;
+            _timer = timer;
+            _gameManager = gameManager;
+            _countdownTime = countdownTime;
         }
 
+        // Автоматически вызывается Zenject'ом после биндинга
+        public void Initialize()
+        {
+            _view.OnStartClicked += HandleStart;
+            _view.OnPauseClicked += HandlePause;
+            _view.OnResumeClicked += HandleResume;
+            _view.ShowStartButton();
+        }
+
+        public void Dispose()
+        {
+            _view.OnStartClicked -= HandleStart;
+            _view.OnPauseClicked -= HandlePause;
+            _view.OnResumeClicked -= HandleResume;
+            _cts?.Cancel();
+        }
+
+        // IGameStartListener
+        public void OnStartGame()
+        {
+            // после старта игры кнопка «Pause»
+            _view.ShowPauseButton();
+        }
+
+        // IGameFinishListener
         public void OnFinishGame()
         {
-            _startButton.onClick.RemoveListener(HandleStartClicked);
-            _pauseButton.onClick.RemoveListener(HandlePauseClicked);
-            _resumeButton.onClick.RemoveListener(HandleResumeClicked);
-
-            StopCountdown();
-
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            // при завершении перезагрузим сцену
+            _cts?.Cancel();
+            // …здесь логика перезагрузки
         }
 
-        private void HandleStartClicked()
+        private void HandleStart()
         {
-            _startButton.gameObject.SetActive(false);
-            StopCountdown();
-            _countdownRoutine = StartCoroutine(CountdownThenStart());
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            
+            _ = PlayCountdownAsync(_countdownTime,_cts.Token);
         }
 
-        private void HandlePauseClicked()
+
+        private async UniTask PlayCountdownAsync(int seconds, CancellationToken token = default)
+        {
+            _view.ShowCountdown();
+
+            await _timer.CountdownAsync(seconds, remaining =>
+            {
+                var text = remaining > 0 ? remaining.ToString() : "GO";
+                _view.SetCountdownText(text);
+            }, token);
+
+            _view.HideCountdown();
+            _gameManager.StartGame();
+        }
+
+        private void HandlePause()
         {
             _gameManager.PauseGame();
-            ShowOnly(_resumeButton);
+            _view.ShowResumeButton();
         }
 
-        private void HandleResumeClicked()
+        private void HandleResume()
         {
             _gameManager.ResumeGame();
-            ShowOnly(_pauseButton);
-        }
-
-        private IEnumerator CountdownThenStart()
-        {
-            _countdownText.gameObject.SetActive(true);
-
-            float timer = _countdownTime;
-            while (timer > 0f)
-            {
-                _countdownText.text = Mathf.CeilToInt(timer).ToString();
-                yield return null;
-                timer -= Time.deltaTime;
-            }
-
-            _countdownText.gameObject.SetActive(false);
-            _gameManager.StartGame();
-            ShowOnly(_pauseButton);
-
-            _countdownRoutine = null;
-        }
-        
-        private void StopCountdown()
-        {
-            if (_countdownRoutine != null)
-            {
-                StopCoroutine(_countdownRoutine);
-                _countdownRoutine = null;
-                _countdownText.gameObject.SetActive(false);
-            }
-        }
-
-        private void ShowOnly(Button buttonToShow)
-        {
-            _startButton.gameObject.SetActive(buttonToShow == _startButton);
-            _pauseButton.gameObject.SetActive(buttonToShow == _pauseButton);
-            _resumeButton.gameObject.SetActive(buttonToShow == _resumeButton);
+            _view.ShowPauseButton();
         }
     }
 }

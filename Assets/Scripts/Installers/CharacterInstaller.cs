@@ -29,8 +29,8 @@ namespace Installers
             //Weapon
             Container.Bind<WeaponComponent>().FromNew().AsSingle().WithArguments(_firePoint);
             Container.Bind<TeamComponent>().FromNew().AsSingle().WithArguments(_isPlayer);
-            Container.BindInterfacesAndSelfTo<AttackComponent>().FromNew().AsSingle().WithArguments(_bulletConfig);
-            Container.Bind<AttackSystem>().AsCached();
+            Container.Bind<AttackComponent>().FromNew().AsSingle().WithArguments(_bulletConfig);
+            Container.Bind<AttackSystem>().AsSingle();
             
             //Health
             Container.Bind<HitPointsComponent>().FromNew().AsSingle().WithArguments(_maxHitPoints);

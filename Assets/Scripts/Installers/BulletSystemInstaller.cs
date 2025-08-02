@@ -3,7 +3,7 @@ using Zenject;
 
 namespace Installers
 {
-    public class BulletInstaller : MonoInstaller
+    public class BulletSystemInstaller : MonoInstaller
     {
         private const string BULLET_PREFAB_PATH = "Objects/Bullet";
 

@@ -9,7 +9,7 @@ namespace Bullets
         void Move();
         void Stop();
         event Action<IBullet, GameObject> OnCollision;
-        event Action<IBullet, GameObject> OnTriggerEnter;
+     
         int Damage { get; }
         bool IsPlayer { get; }
     }
@@ -19,6 +19,7 @@ namespace Bullets
         public Vector2 Position;
         public Quaternion Rotation;
         public Vector2 Direction;
+        public int LifeTime;
         public float Speed;
         public int Damage;
         public int Layer;

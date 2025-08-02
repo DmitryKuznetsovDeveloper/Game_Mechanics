@@ -22,7 +22,6 @@ namespace Bullets
         {
             var bullet = _factory.Create(data);
             bullet.OnCollision += HandleHit;
-            bullet.OnTriggerEnter += HandleHit;
             bullet.Move();
         }
         
@@ -30,7 +29,6 @@ namespace Bullets
         {
             _collisionSystem.Process(bullet, target, _damageSystem);
             bullet.OnCollision -= HandleHit;
-            bullet.OnTriggerEnter -= HandleHit;
             if (bullet is Bullet b)
                 b.Stop();
         }

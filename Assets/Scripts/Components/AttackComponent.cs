@@ -30,6 +30,7 @@ namespace Components
                 Rotation = rotation,
                 Direction = direction,
                 Speed = _bulletConfig.Speed,
+                LifeTime = _bulletConfig.Lifetime,
                 Damage = _bulletConfig.Damage,
                 Layer = (int)_bulletConfig.PhysicsLayer,
                 Color = _bulletConfig.Color,
