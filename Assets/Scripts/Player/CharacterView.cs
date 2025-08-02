@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Character
+namespace Player
 {
     public class CharacterView : MonoBehaviour
     {

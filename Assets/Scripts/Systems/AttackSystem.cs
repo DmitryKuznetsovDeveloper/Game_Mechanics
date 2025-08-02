@@ -7,34 +7,32 @@ namespace Systems
 {
     public sealed class AttackSystem
     {
-        private readonly AttackComponent _attackComponent;
         private readonly BulletSystem _bulletSystem;
 
-        public AttackSystem(AttackComponent attackComponent, BulletSystem bulletSystem)
+        public AttackSystem(BulletSystem bulletSystem)
         {
-            _attackComponent = attackComponent;
             _bulletSystem = bulletSystem;
         }
-        
-        public void Fire()
+
+        public void Fire(AttackComponent attacker)
         {
-            var direction = _attackComponent.WeaponUp;
-            FireInDirection(direction);
+            var direction = attacker.WeaponUp;
+            FireInDirection(attacker, direction);
         }
-        
-        public void FireAt(Vector2 targetPosition)
+
+        public void FireAt(AttackComponent attacker, Vector2 targetPos)
         {
-            var direction = (_attackComponent.WeaponPosition - targetPosition).normalized;
-            FireInDirection(direction);
+            var direction = (attacker.WeaponPosition - targetPos).normalized;
+            FireInDirection(attacker, direction);
         }
-        
-        public void FireInDirection(Vector2 direction)
+
+        public void FireInDirection(AttackComponent attacker, Vector2 direction)
         {
-            var bullet = _attackComponent.MakeBullet(direction);
+            var bullet = attacker.MakeBullet(direction);
             _bulletSystem.Fire(bullet);
             DebugUtil.DrawLine(
-                _attackComponent.WeaponPosition,
-                (Vector3)_attackComponent.WeaponPosition + (Vector3)direction * 10f,
+                attacker.WeaponPosition,
+                (Vector3)attacker.WeaponPosition + (Vector3)direction * 10f,
                 Color.red, 1f
             );
         }

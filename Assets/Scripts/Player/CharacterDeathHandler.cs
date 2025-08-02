@@ -1,7 +1,7 @@
 ﻿using Components;
 using GameCycle;
 
-namespace Character
+namespace Player
 {
     public sealed class CharacterDeathHandler : IGameStartListener, IGameFinishListener
     {

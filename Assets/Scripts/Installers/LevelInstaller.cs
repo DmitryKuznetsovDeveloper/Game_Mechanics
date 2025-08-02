@@ -11,7 +11,7 @@ namespace Installers
         public override void InstallBindings()
         {
             Container.BindInterfacesTo<LevelBackground>().FromNew().AsSingle()
-                .WithArguments(_backgroundMaterial.material, _scrollSpeedY);
+                .WithArguments(_backgroundMaterial.sharedMaterial, _scrollSpeedY);
         }
     }
 }

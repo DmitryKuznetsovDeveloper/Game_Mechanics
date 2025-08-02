@@ -1,8 +1,10 @@
+using Components;
 using GameCycle;
 using Input;
 using Systems;
+using Utils;
 
-namespace Character
+namespace Player
 {
     public sealed class CharacterInputController : IGameStartListener, IGameFixedTickable, IGameFinishListener
     {
@@ -43,7 +45,8 @@ namespace Character
 
         private void HandleFire()
         {
-            _attackSystem.Fire();
+            DebugUtil.Log("HandleFire CharacterInputController");
+            //_attackSystem.Fire();
         }
     }
 }

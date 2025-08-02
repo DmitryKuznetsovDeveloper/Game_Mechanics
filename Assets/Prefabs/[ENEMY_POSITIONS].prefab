@@ -139,7 +139,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5325004657775103069}
-  - component: {fileID: 1691597283579661315}
   m_Layer: 0
   m_Name: '[ENEMY_POSITIONS]'
   m_TagString: Untagged
@@ -164,28 +163,6 @@ Transform:
   - {fileID: 7688639896440024680}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1691597283579661315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4006440922598382612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a94380673bed40d7aff42c7cee30b556, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _spawnPoints:
-  - {fileID: 9181951417548032490}
-  - {fileID: 9138175930476250046}
-  - {fileID: 1588349772481286399}
-  - {fileID: 7705003083275360497}
-  - {fileID: 4140683123576194003}
-  - {fileID: 5764515476209518143}
-  _attackCenter: {fileID: 7688639896440024680}
-  _attackRadius: 5.5
-  _minDistanceBetweenPoints: 1
 --- !u!1 &5067052580581916964
 GameObject:
   m_ObjectHideFlags: 0
