@@ -376,6 +376,12 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!23 &511246614 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5449397247742830830, guid: 5e35873851b31a44f9d43e34ca5c7036,
+    type: 3}
+  m_PrefabInstance: {fileID: 7122494123601385430}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &556424299
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,6 +462,7 @@ GameObject:
   - component: {fileID: 977347567}
   - component: {fileID: 977347566}
   - component: {fileID: 977347565}
+  - component: {fileID: 977347569}
   m_Layer: 0
   m_Name: SceneContext
   m_TagString: Untagged
@@ -503,6 +510,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 17ccd0cc671cf8141831a1c8fa96fd98, type: 2}
   _monoInstallers:
   - {fileID: 977347565}
+  - {fileID: 977347569}
   - {fileID: 2093969803}
   _installerPrefabs: []
   _autoRun: 1
@@ -537,6 +545,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &977347569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 977347563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd9f14993b1a440fb32529a50fd53d22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _backgroundMaterial: {fileID: 511246614}
+  _scrollSpeedY: 0.15
 --- !u!1 &1070888382
 GameObject:
   m_ObjectHideFlags: 0
