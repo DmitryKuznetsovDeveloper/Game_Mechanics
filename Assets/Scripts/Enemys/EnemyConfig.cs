@@ -12,6 +12,6 @@ namespace Enemys
         public float StopDistance = 0.3f;
         public float FireCooldown = 1.0f;
         public BulletConfig BulletConfig;
-        public TeamComponent TeamComponent;
+        public bool IsPlayer;
     }
 }

@@ -3,14 +3,15 @@ using GameCycle;
 
 namespace Player
 {
-    public sealed class CharacterDeathHandler : IGameStartListener, IGameFinishListener
+    public sealed class PlayerDeathHandler : IGameStartListener, IGameFinishListener
     {
         private readonly HitPointsComponent _hitPointsComponent;
         private readonly GameManager _gameManager;
 
-        public CharacterDeathHandler(HitPointsComponent hitPointsComponent)
+        public PlayerDeathHandler(HitPointsComponent hitPointsComponent, GameManager gameManager)
         {
             _hitPointsComponent = hitPointsComponent;
+            _gameManager = gameManager;
         }
 
         public void OnStartGame()

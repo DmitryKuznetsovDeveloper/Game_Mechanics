@@ -1,5 +1,4 @@
 ﻿using Components;
-using GameCycle;
 using Player;
 using Systems;
 using UnityEngine;
@@ -7,7 +6,7 @@ using Zenject;
 
 namespace Enemys
 {
-    public class Enemy : IGameFixedTickable
+    public class Enemy 
     {
         public EnemyView View => _view;
         public GameObject Root => _view.Root;
@@ -22,7 +21,7 @@ namespace Enemys
         private readonly AttackComponent _attackComponent;
 
         private Vector2 _destination;
-        private Character _character;
+        private PlayerFacade _playerFacade;
         private float _stopDistance;
         private float _fireCooldown;
         private float _fireTimer;
@@ -42,24 +41,24 @@ namespace Enemys
             _hitPointsComponent = new HitPointsComponent(config.MaxHitPoints);
 
             _weaponComponent = new WeaponComponent(firePoint);
-            _attackComponent = new AttackComponent(config.TeamComponent, _weaponComponent, config.BulletConfig);
+            _attackComponent = new AttackComponent(new TeamComponent(config.IsPlayer), _weaponComponent, config.BulletConfig);
 
             _stopDistance = config.StopDistance;
             _fireCooldown = config.FireCooldown;
             _fireTimer = _fireCooldown;
         }
 
-        public void Initialize(Vector2 destination, Character character)
+        public void Initialize(Vector2 destination, PlayerFacade playerFacade)
         {
             _destination = destination;
-            _character = character;
+            _playerFacade = playerFacade;
             _reached = false;
             _fireTimer = _fireCooldown;
             _hitPointsComponent.ResetHitPoints();
             _view.Root.SetActive(true);
         }
 
-        public void FixedTick(float deltaTime)
+        public void OnFixedUpdateAI(float deltaTime)
         {
             if (!IsAlive)
                 return;
@@ -88,7 +87,7 @@ namespace Enemys
 
         private void TryAttack(float fixedDeltaTime)
         {
-            if (!_character.HasHitPoints())
+            if (!_playerFacade.HasHitPoints())
                 return;
 
             _fireTimer -= fixedDeltaTime;
@@ -105,7 +104,7 @@ namespace Enemys
             _moveComponent.MoveByRigidbodyVelocity(Vector2.zero);
         }
 
-        public void Respawn(Vector2 newDestination, Character newTarget)
+        public void Respawn(Vector2 newDestination, PlayerFacade newTarget)
         {
             Initialize(newDestination, newTarget);
         }

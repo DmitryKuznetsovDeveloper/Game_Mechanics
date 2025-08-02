@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdb8d0e11ac4420e8c6cd08b3327e254, type: 3}
-  m_Name: CharacterBulletConfig
+  m_Script: {fileID: 11500000, guid: 64af79d552e447c0be75bb445627f204, type: 3}
+  m_Name: PlayerConfig
   m_EditorClassIdentifier: 
-  _lifeTime: 3
-  _speed: 10
-  _damage: 1
-  _physicsLayer: 13
-  _color: {r: 1, g: 0, b: 0.9233203, a: 1}
+  _maxHitPoints: 10
+  _speed: 5
+  _minMovePositionX: -8
+  _maxMovePositionX: 8
+  _bulletConfig: {fileID: 11400000, guid: dc938c1eaa05dd045b170276d72d20d0, type: 2}
+  _isPlayer: 1

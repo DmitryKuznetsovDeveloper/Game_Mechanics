@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ff2644965fd45859f52a8576297bb45, type: 3}
   m_Name: EnemyConfig
   m_EditorClassIdentifier: 
-  MoveSpeed: 2
+  MoveSpeed: 4
   MaxHitPoints: 10
   StopDistance: 0.3
-  FireCooldown: 1
+  FireCooldown: 2
   BulletConfig: {fileID: 11400000, guid: 96b61e979e4bb4442be58511e5e38ed3, type: 2}
+  IsPlayer: 0

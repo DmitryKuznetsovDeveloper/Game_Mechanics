@@ -6,6 +6,7 @@ namespace Components
     public sealed class AttackComponent
     {
         public Vector2 WeaponUp => _weapon.Transform.up;
+        public Vector2 WeaponRight => _weapon.Transform.right;
         public Vector2 WeaponPosition => _weapon.Position;
         
         private readonly TeamComponent _teamComponent;

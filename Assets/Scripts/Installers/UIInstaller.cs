@@ -1,29 +1,32 @@
-﻿using Components;
-using GameCycle;
-using UnityEngine;
+﻿using UnityEngine;
 using UI;
 using Zenject;
 
 namespace Installers
 {
-    public class UIInstaller : MonoInstaller
+    public sealed class UIInstaller 
     {
-        [Header("Countdown Settings")] 
-        [SerializeField] int _countdownTime = 3;
-
-        public override void InstallBindings()
+        private readonly int _countdownTime;
+        private readonly Transform _uiSpawnPoint;
+        private const string UI_PREFAB_PATH = "UI/UIGame";
+        
+        public UIInstaller(int countdownTime, Transform uiSpawnPoint)
         {
-            // View (должен лежать в сцене)
-            Container.Bind<GameUIView>()
-                .FromComponentInHierarchy()
-                .AsSingle();
+            _countdownTime = countdownTime;
+            _uiSpawnPoint = uiSpawnPoint;
+        }
 
-            // Контроллер UI
-            Container.BindInterfacesAndSelfTo<GameUIController>()
+        public void InstallBindings(DiContainer container)
+        {
+            container.Bind<GameUIView>()
+                .FromComponentInNewPrefabResource(UI_PREFAB_PATH)
+                .UnderTransform(_uiSpawnPoint)
                 .AsSingle();
-
-            // Время обратного отсчёта
-            Container.BindInstance(_countdownTime)
+            
+            container.BindInterfacesAndSelfTo<GameUIController>()
+                .AsSingle();
+            
+            container.BindInstance(_countdownTime)
                 .WithId("UI_CountdownTime");
         }
     }

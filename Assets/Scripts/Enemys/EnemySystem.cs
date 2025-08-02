@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GameCycle;
 using Player;
 using Systems;
 using UnityEngine;
@@ -6,13 +7,13 @@ using Zenject;
 
 namespace Enemys
 {
-    public class EnemySystem : IInitializable, ITickable
+    public class EnemySystem : IGameStartListener, IGameTickable
     {
         private readonly EnemyView.Pool _viewPool;
         private readonly Enemy.Factory _enemyFactory;
         private readonly AttackSystem _attackSystem;
         private readonly EnemyConfig _defaultConfig;
-        private readonly Character _player;
+        private readonly PlayerFacade _player;
 
         private readonly List<Enemy> _enemies = new();
 
@@ -21,7 +22,7 @@ namespace Enemys
             Enemy.Factory enemyFactory,
             AttackSystem attackSystem,
             [Inject(Id = "DefaultEnemyConfig")] EnemyConfig defaultConfig,
-            Character player)
+            PlayerFacade player)
         {
             _viewPool = viewPool;
             _enemyFactory = enemyFactory;
@@ -29,8 +30,7 @@ namespace Enemys
             _defaultConfig = defaultConfig;
             _player = player;
         }
-
-        public void Initialize()
+        public void OnStartGame()
         {
             for (int i = 0; i < 5; i++)
             {
@@ -39,14 +39,14 @@ namespace Enemys
                 SpawnEnemy(spawnPos, attackPos, _defaultConfig);
             }
         }
-
-        public void Tick()
+        
+        public void Tick(float deltaTime)
         {
             float dt = Time.deltaTime;
             for (int i = _enemies.Count - 1; i >= 0; i--)
             {
                 var enemy = _enemies[i];
-                enemy.FixedTick(dt);
+                enemy.OnFixedUpdateAI(dt);
 
                 if (!enemy.IsAlive)
                 {

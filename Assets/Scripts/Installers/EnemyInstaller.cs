@@ -1,4 +1,5 @@
-﻿using Systems;
+﻿using Player;
+using Systems;
 using UnityEngine;
 using Zenject;
 
@@ -20,8 +21,16 @@ namespace Enemys
                 .UnderTransform(_enemiesContainer);
             Container.Bind<AttackSystem>().AsSingle();
             Container.BindFactory<EnemyView, AttackSystem, EnemyConfig, Transform, Enemy, Enemy.Factory>();
-            Container.BindInterfacesAndSelfTo<EnemySystem>().AsSingle();
             
+            
+            var prefab = Resources.Load<GameObject>("Objects/Character");
+            // 2. Спавним его на сцену в нужной позиции
+            var go = GameObject.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+
+            // 3. Если нужно, можем получить GameObjectContext
+            var context = go.GetComponent<Zenject.GameObjectContext>();
+            var character = context.Container.Resolve<PlayerFacade>();
+            Container.BindInterfacesAndSelfTo<EnemySystem>().AsSingle().WithArguments(character);
         }
     }
 }
