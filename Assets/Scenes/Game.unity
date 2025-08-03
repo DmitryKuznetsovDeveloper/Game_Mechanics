@@ -342,6 +342,11 @@ PrefabInstance:
       objectReference: {fileID: 24657347}
     - target: {fileID: 8327320182746234639, guid: e87e0f32215a6f64cb90080693cca87a,
         type: 3}
+      propertyPath: _countdownTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8327320182746234639, guid: e87e0f32215a6f64cb90080693cca87a,
+        type: 3}
       propertyPath: _enemyContainer
       value: 
       objectReference: {fileID: 220355426}
