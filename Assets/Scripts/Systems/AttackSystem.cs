@@ -22,7 +22,7 @@ namespace Systems
 
         public void FireAt(AttackComponent attacker, Vector2 targetPos)
         {
-            var direction = (targetPos - attacker.WeaponRight).normalized;
+            var direction = (targetPos - attacker.WeaponPosition).normalized;
             FireInDirection(attacker, direction);
         }
 

@@ -9,31 +9,46 @@ namespace Installers
     public sealed class EnemyInstaller
     {
         private readonly EnemyConfig _defaultConfig;
-        private readonly Transform _enemySpawnPoint;
+        private readonly Transform _enemyContainer;
+        private readonly EnemyPositionsView _enemyPositionsView;
+        private readonly int _maxEnemies;
 
-        public EnemyInstaller(EnemyConfig defaultConfig, Transform enemySpawnPoint)
+        public EnemyInstaller(EnemyConfig defaultConfig, Transform enemyContainer,
+            EnemyPositionsView enemyPositionsView, int maxEnemies)
         {
             _defaultConfig = defaultConfig;
-            _enemySpawnPoint = enemySpawnPoint;
+            _enemyContainer = enemyContainer;
+            _enemyPositionsView = enemyPositionsView;
+            _maxEnemies = maxEnemies;
         }
 
         private const string ENEMY_PREFAB_PATH = "Objects/Enemy";
 
         public void InstallBindings(DiContainer container)
         {
-            container.BindInstance(_defaultConfig).WithId("DefaultEnemyConfig");
+            container
+                .BindInterfacesAndSelfTo<EnemyPositionService>()
+                .AsSingle()
+                .WithArguments(_enemyPositionsView.SpawnPoints, _enemyPositionsView.AttackCenter,
+                    _enemyPositionsView.AttackRadius, _enemyPositionsView.MinDistanceBetweenPoints);
 
             container.BindMemoryPool<EnemyView, EnemyView.Pool>()
                 .WithInitialSize(16)
                 .FromComponentInNewPrefabResource(ENEMY_PREFAB_PATH)
-                .UnderTransform(_enemySpawnPoint);
+                .UnderTransform(_enemyContainer);
 
-            container.Bind<AttackSystem>().AsSingle();
+            container.BindFactory<
+                    GameManager,
+                    AttackSystem,
+                    EnemyView,
+                    EnemyPositionService,
+                    EnemyConfig,
+                    EnemyFacade,
+                    EnemyFacade.Factory>();  
 
-            container.BindFactory<GameManager, AttackSystem, EnemyView, 
-                EnemyConfig, EnemyFacade, EnemyFacade.Factory>();
-            
             container.BindInterfacesAndSelfTo<EnemySystem>().AsSingle();
+
+            container.BindInterfacesAndSelfTo<WaveManager>().AsSingle().WithArguments(_defaultConfig, _maxEnemies);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Bullets;
+using Systems;
 using UnityEngine;
 using Zenject;
 
@@ -17,15 +18,17 @@ namespace Installers
 
         public void InstallBindings(DiContainer container)
         {
-            container.BindFactory<BulletData, Bullet, Bullet.Factory>()
-                .FromPoolableMemoryPool<BulletData, Bullet, Bullet.Pool>(poolBinder => poolBinder
+            container.BindMemoryPool<BulletView, BulletView.Pool>()
                     .WithInitialSize(30)
                     .FromComponentInNewPrefabResource(BULLET_PREFAB_PATH)
-                    .UnderTransformGroup("Bullets"));
+                    .UnderTransform(_spawnPoint);
+            
+            container.BindFactory<BulletView, BulletFacade, BulletFacade.Factory>();
             
             container.Bind<IBulletCollisionSystem>().To<BulletCollisionSystem>().AsSingle();
             container.Bind<IDamageSystem>().To<DamageSystem>().AsSingle();
-            container.Bind<BulletController>().AsSingle();
+            container.BindInterfacesAndSelfTo<BulletController>().AsSingle();
+            container.Bind<AttackSystem>().AsSingle();
             container.Bind<BulletSystem>().AsSingle();
         }
     }

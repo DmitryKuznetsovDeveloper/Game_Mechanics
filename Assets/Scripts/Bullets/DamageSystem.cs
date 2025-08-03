@@ -1,4 +1,6 @@
 ﻿using Components;
+using Enemys;
+using Player;
 using UnityEngine;
 
 namespace Bullets
@@ -12,10 +14,17 @@ namespace Bullets
     {
         public void ApplyDamage(GameObject target, int amount, bool isPlayer)
         {
-            if (target.TryGetComponent<HitPointsComponent>(out var hp))
+            
+            if (target.TryGetComponent<EnemyView>(out var ev))
             {
-                hp.TakeDamage(amount);
+                ev.Facade.TakeDamage(amount);
+                return;
             }
+
+            if (!target.TryGetComponent<PlayerView>(out var pv)) 
+                return;
+            
+            pv.Facade.TakeDamage(amount);
         }
     }
 }

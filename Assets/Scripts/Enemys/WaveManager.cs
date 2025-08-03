@@ -1,37 +1,41 @@
 ﻿using GameCycle;
-using UnityEngine;
-using Utils;
+using Installers;
 using Zenject;
 
 namespace Enemys
 {
-    public sealed class WaveManager : IGameStartListener
+    public sealed class WaveManager : IGameTickable
     {
-        private readonly EnemySystem _enemySystem;
-        private readonly EnemyConfig _enemyConfig;
+        readonly EnemySystem _enemySystem;
+        readonly IEnemyPositionService _positions;
+        readonly EnemyConfig _enemyConfig;
+        readonly int _maxEnemies;
 
         public WaveManager(
             EnemySystem enemySystem,
-            [Inject(Id = "DefaultEnemyConfig")] EnemyConfig enemyConfig)
+            IEnemyPositionService positions,
+            EnemyConfig defaultConfig,
+            int maxEnemies)
         {
-            _enemySystem = enemySystem;
-            _enemyConfig = enemyConfig;
+            _enemySystem   = enemySystem;
+            _positions     = positions;
+            _enemyConfig   = defaultConfig;
+            _maxEnemies    = maxEnemies;
         }
 
-        public void SpawnWave()
+        public void Tick(float deltaTime)
         {
-            for (int i = 0; i < 10; i++)
+            while (_enemySystem.CurrentEnemyCount < _maxEnemies)
             {
-                Vector2 spawnPos = new Vector2(Random.Range(-7f, 7f), 8f);
-                Vector2 attackPos = new Vector2(Random.Range(-7f, 7f), Random.Range(1f, 7f));
-                _enemySystem.SpawnEnemy(spawnPos, attackPos, _enemyConfig);
+                SpawnOne();
             }
         }
 
-        public void OnStartGame()
+        void SpawnOne()
         {
-            DebugUtil.Log("Spawning Wave");
-            SpawnWave();
+            var spawnPos = _positions.RandomSpawnPoint().position;
+            var attackPos = _positions.RandomAttackPoint();
+            _enemySystem.SpawnEnemy(spawnPos, attackPos, _enemyConfig);
         }
     }
 }

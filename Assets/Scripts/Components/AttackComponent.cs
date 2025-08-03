@@ -6,7 +6,6 @@ namespace Components
     public sealed class AttackComponent
     {
         public Vector2 WeaponUp => _weapon.Transform.up;
-        public Vector2 WeaponRight => _weapon.Transform.right;
         public Vector2 WeaponPosition => _weapon.Position;
         
         private readonly TeamComponent _teamComponent;
@@ -28,13 +27,9 @@ namespace Components
             return new BulletData
             {
                 Position = _weapon.Position,
-                Rotation = rotation,
                 Direction = direction,
-                Speed = _bulletConfig.Speed,
-                LifeTime = _bulletConfig.Lifetime,
-                Damage = _bulletConfig.Damage,
-                Layer = (int)_bulletConfig.PhysicsLayer,
-                Color = _bulletConfig.Color,
+                Rotation = rotation,
+                Config = _bulletConfig,
                 IsPlayer = _teamComponent.IsPlayer
             };
         }

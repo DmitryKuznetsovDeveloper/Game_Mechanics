@@ -1,5 +1,4 @@
-﻿using Bullets;
-using Components;
+﻿using Components;
 using GameCycle;
 using UnityEngine;
 
@@ -7,12 +6,8 @@ namespace Player
 {
     public sealed class PlayerFacade
     {
-        public GameObject Root => _playerView.Root;
-        public Transform Transform => _playerView.Transform;
         public Vector2 Position => _playerView.Position;
-        public Vector2 WeaponPosition => _weaponComponent.Position;
-        public Transform WeaponTransform => _weaponComponent.Transform;
-        public Quaternion WeaponRotation => _weaponComponent.Rotation;
+        public AttackComponent AttackComponent => _attackComponent;
 
         public bool IsPlayer
         {
@@ -42,6 +37,7 @@ namespace Player
         {
             _gameManager = gameManager;
             _playerView = playerView;
+            _playerView.Facade = this;
             
             _teamComponent = new (playerConfig.IsPlayer);
             _moveComponent = new (playerConfig.Speed,playerView.Rigidbody);
@@ -53,23 +49,18 @@ namespace Player
             _gameManager.AddListener(_moveComponent);
             _gameManager.AddListener(_playerDeathHandler);
         }
-
-        public void MoveByRigidbodyVelocity(Vector2 direction) => _moveComponent.MoveByRigidbodyVelocity(direction);
-
+        
         public void MoveByRigidbodyVelocityClamped(Vector2 direction, float minX, float maxX) =>
             _moveComponent.MoveByRigidbodyVelocityClamped(direction, minX, maxX);
-        public void SetSpeed(float speed) => _moveComponent.SetSpeed(speed);
-
-        public void Freeze() => _moveComponent.Freeze();
-
-        public void Unfreeze() => _moveComponent.Unfreeze();
-
-        public BulletData MakeBullet(Vector2 direction) => _attackComponent.MakeBullet(direction);
         
         public bool HasHitPoints() => _hitPointsComponent.HasHitPoints();
         
         public void ResetHitPoints() => _hitPointsComponent.ResetHitPoints();
 
-        public void TakeDamage(int damage) => _hitPointsComponent.TakeDamage(damage);
+        public void TakeDamage(int damage)
+        {
+            _playerView.PlayDamageAnimation();
+            _hitPointsComponent.TakeDamage(damage);
+        }
     }
 }

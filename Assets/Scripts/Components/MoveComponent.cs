@@ -23,36 +23,34 @@ namespace Components
         {
             _rb.linearVelocity = direction * _speed;
         }
-    
+
         public void MoveByRigidbodyVelocityClamped(Vector2 direction, float minX, float maxX)
         {
             var pos = _rb.position;
             var clampedX = Mathf.Clamp(pos.x, minX, maxX);
 
             direction.y = 0f;
-        
+
             if (Mathf.Approximately(pos.x, minX) && direction.x < 0f)
                 direction.x = 0f;
-        
+
             if (Mathf.Approximately(pos.x, maxX) && direction.x > 0f)
                 direction.x = 0f;
 
             _rb.linearVelocity = direction * _speed;
-        
+
             if (!Mathf.Approximately(pos.x, clampedX))
                 _rb.position = new Vector2(clampedX, pos.y);
         }
 
         public void OnPauseGame()
         {
-            _storedVelocity = _rb.linearVelocity;
-            Freeze();
+            StopSpeed();
         }
 
         public void OnResumeGame()
         {
-            Unfreeze();
-            _rb.linearVelocity = _storedVelocity;
+            RevertSpeed();
         }
 
         public void OnFinishGame()
@@ -62,15 +60,27 @@ namespace Components
 
         public void Freeze()
         {
+            _storedVelocity = _rb.linearVelocity;
             _originalConstraints = _rb.constraints;
             _rb.linearVelocity = Vector2.zero;
             _rb.angularVelocity = 0f;
-            _rb.constraints = RigidbodyConstraints2D.FreezeAll;
         }
 
         public void Unfreeze()
         {
             _rb.constraints = _originalConstraints;
+            _rb.linearVelocity = _storedVelocity;
+        }
+
+        public void StopSpeed()
+        {
+            _rb.linearVelocity = Vector2.zero;
+            _storedVelocity = _rb.linearVelocity;
+        }
+
+        public void RevertSpeed()
+        {
+            _storedVelocity = _rb.linearVelocity;
         }
     }
 }

@@ -1,5 +1,6 @@
 using GameCycle;
 using Input;
+using Systems;
 using Utils;
 
 namespace Player
@@ -8,15 +9,18 @@ namespace Player
     {
         private readonly InputReader _inputReader;
         private readonly PlayerFacade _playerFacade;
+        private readonly AttackSystem _attackSystem;
         private readonly PlayerConfig _playerConfig;
 
         public PlayerInputController(
             InputReader inputReader, 
-            PlayerFacade playerFacade, 
+            PlayerFacade playerFacade,
+            AttackSystem attackSystem,
             PlayerConfig playerConfig)
         {
             _inputReader = inputReader;
             _playerFacade = playerFacade;
+            _attackSystem = attackSystem;
             _playerConfig = playerConfig;
         }
 
@@ -39,7 +43,7 @@ namespace Player
 
         private void HandleFire()
         {
-            DebugUtil.Log("HandleFire CharacterInputController");
+            _attackSystem.Fire(_playerFacade.AttackComponent);
         }
     }
 }

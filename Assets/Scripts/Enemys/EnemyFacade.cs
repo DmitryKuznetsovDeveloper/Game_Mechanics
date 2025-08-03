@@ -1,5 +1,7 @@
-﻿using Components;
+﻿using System;
+using Components;
 using GameCycle;
+using Installers;
 using Player;
 using Systems;
 using UnityEngine;
@@ -9,12 +11,8 @@ namespace Enemys
 {
     public class EnemyFacade
     {
+        public event Action<EnemyFacade> OnDeath;
         public EnemyView EnemyView => _enemyView;
-        public GameObject Root => _enemyView.Root;
-        public Transform Transform => _enemyView.Transform;
-        public Vector2 Position => _enemyView.Position;
-        public Rigidbody2D Rigidbody => _enemyView.Rigidbody;
-        public Transform FirePoint => _enemyView.FirePoint;
 
         public bool IsPlayer
         {
@@ -31,6 +29,7 @@ namespace Enemys
         private readonly GameManager _gameManager;
         private readonly AttackSystem _attackSystem;
         private readonly EnemyView _enemyView;
+        private readonly EnemyPositionService _enemyPositionService;
         private readonly EnemyConfig _enemyConfig;
         private readonly TeamComponent _teamComponent;
         private readonly MoveComponent _moveComponent;
@@ -47,16 +46,20 @@ namespace Enemys
             GameManager gameManager,
             AttackSystem attackSystem,
             EnemyView enemyView,
-            EnemyConfig config)
+            EnemyPositionService enemyPositionService,
+            EnemyConfig enemyConfig)
         {
             _gameManager = gameManager;
             _attackSystem = attackSystem;
             _enemyView = enemyView;
-            _teamComponent = new(config.IsPlayer);
-            _moveComponent = new(config.Speed, enemyView.Rigidbody);
+            _enemyView.Facade = this;
+            _enemyPositionService = enemyPositionService;
+            _enemyConfig = enemyConfig;
+            _teamComponent = new(enemyConfig.IsPlayer);
+            _moveComponent = new(enemyConfig.Speed, enemyView.Rigidbody);
             _weaponComponent = new(_enemyView.FirePoint);
-            _attackComponent = new(_teamComponent, _weaponComponent, config.BulletConfig);
-            _hitPointsComponent = new(config.MaxHitPoints);
+            _attackComponent = new(_teamComponent, _weaponComponent, enemyConfig.BulletConfig);
+            _hitPointsComponent = new(enemyConfig.MaxHitPoints);
 
             _gameManager.AddListener(_moveComponent);
         }
@@ -89,11 +92,11 @@ namespace Enemys
             if (delta.sqrMagnitude < _enemyConfig.StopDistance * _enemyConfig.StopDistance)
             {
                 _reached = true;
-                Freeze();
+                _moveComponent.StopSpeed();
             }
             else
             {
-                Unfreeze();
+                _moveComponent.MoveByRigidbodyVelocity(delta);
             }
         }
 
@@ -106,42 +109,47 @@ namespace Enemys
             if (!(_fireTimer <= 0f))
                 return;
 
-            _attackSystem.Fire(_attackComponent);
+            _attackSystem.FireAt(_attackComponent, _playerFacade.Position);
             _fireTimer = _enemyConfig.FireCooldown;
+
+            _destination = PickNewDestination(_destination);
+            _reached = false;
         }
-
-        public void SetSpeed(float speed) => _moveComponent.SetSpeed(speed);
-
-        public void Freeze() => _moveComponent.Freeze();
-
-        public void Unfreeze() => _moveComponent.Unfreeze();
-
-        public void Respawn(Vector2 newDestination, PlayerFacade newTarget)
+        
+        public Vector2 PickNewDestination(Vector2 currentPoint)
         {
-            Initialize(newDestination, newTarget);
+            _enemyPositionService.ReleaseAttackPoint(currentPoint);
+            return _enemyPositionService.RandomAttackPoint();
         }
 
         public bool HasHitPoints() => _hitPointsComponent.HasHitPoints();
 
         public void ResetHitPoints() => _hitPointsComponent.ResetHitPoints();
 
-        public void TakeDamage(int damage) => _hitPointsComponent.TakeDamage(damage);
+        public void TakeDamage(int damage)
+        {
+            _enemyView.PlayDamageAnimation();
+            _hitPointsComponent.TakeDamage(damage);
+        }
 
         public void Die()
         {
             _enemyView.Root.SetActive(false);
             _moveComponent.MoveByRigidbodyVelocity(Vector2.zero);
         }
-        
-        public class Factory : PlaceholderFactory<GameManager, AttackSystem, EnemyView, EnemyConfig, EnemyFacade>
+
+        public class
+            Factory : PlaceholderFactory<GameManager, AttackSystem, EnemyView,
+            EnemyPositionService, EnemyConfig, EnemyFacade>
         {
             public override EnemyFacade Create(
                 GameManager gameManager,
                 AttackSystem attackSystem,
                 EnemyView view,
+                EnemyPositionService enemyPositionService,
                 EnemyConfig config)
             {
-                return new EnemyFacade(gameManager, attackSystem, view, config);
+                return new EnemyFacade(gameManager, attackSystem, view, enemyPositionService, config);
             }
         }
     }

@@ -9,22 +9,17 @@ namespace Bullets
         void Move();
         void Stop();
         event Action<IBullet, GameObject> OnCollision;
-     
+         BulletView View  { get; }
         int Damage { get; }
         bool IsPlayer { get; }
     }
-    
+
     public struct BulletData
     {
         public Vector2 Position;
-        public Quaternion Rotation;
         public Vector2 Direction;
-        public int LifeTime;
-        public float Speed;
-        public int Damage;
-        public int Layer;
-        public Color Color;
+        public Quaternion Rotation;
         public bool IsPlayer;
+        public BulletConfig Config;
     }
-
 }

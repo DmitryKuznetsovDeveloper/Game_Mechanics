@@ -6,6 +6,7 @@ namespace Player
 {
     public class PlayerView : MonoBehaviour, IGameStartListener
     {
+        public PlayerFacade Facade { get; set; }
         public Rigidbody2D Rigidbody => _rigidbody;
         public Transform FirePoint => _firePoint;
         public GameObject Root => gameObject;
@@ -15,6 +16,11 @@ namespace Player
         [SerializeField] private SpriteRenderer _renderer;
         [SerializeField] private Rigidbody2D _rigidbody;
         [SerializeField] private Transform _firePoint;
+        
+        public void OnStartGame()
+        {
+            PlayAppearAnimation();
+        }
         
         public void PlayAppearAnimation(float duration = 0.4f)
         {
@@ -35,10 +41,19 @@ namespace Player
             seq.Append(transform.DOScale(Vector3.one, duration * 0.15f).SetEase(Ease.OutElastic));
             seq.Append(transform.DOPunchScale(Vector3.one * 0.25f, 0.22f, 12, 1f));
         }
-
-        public void OnStartGame()
+        
+        public void PlayDamageAnimation()
         {
-            PlayAppearAnimation();
+            _renderer.DOKill();
+            transform.DOKill();
+            var origColor = _renderer.color;
+            var flashDur = 0.1f;
+            var punchDur = 0.2f;
+            var seq = DOTween.Sequence();
+            seq.Append(_renderer.DOColor(Color.red, flashDur * 0.5f));
+            seq.Join(transform.DOPunchScale(Vector3.one * 0.2f, punchDur, 10, 1f)
+                .SetEase(Ease.OutQuad));
+            seq.Append(_renderer.DOColor(origColor, flashDur * 0.5f));
         }
     }
 }

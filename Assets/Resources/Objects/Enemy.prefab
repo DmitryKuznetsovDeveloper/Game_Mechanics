@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 659620479434099170}
+  _renderer: {fileID: 7936085547460007407}
   _firePoint: {fileID: 3195880656587174614}
 --- !u!1 &2239154907127902911
 GameObject:

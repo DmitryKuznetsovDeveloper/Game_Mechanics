@@ -374,10 +374,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerConfig: {fileID: 11400000, guid: ef2515fea7c08624e9a8186d839d63ce, type: 2}
   _playerSpawnPoint: {fileID: 14125364}
-  _countdownTime: 3
+  _countdownTime: 0
   _uiSpawnPoint: {fileID: 24657347}
   _defaultConfig: {fileID: 11400000, guid: 5b217d64454b30040b5334553329f2f3, type: 2}
-  _enemySpawnPoint: {fileID: 220355426}
+  _enemyContainer: {fileID: 220355426}
+  _enemyPositionsView: {fileID: 1409730479}
+  _maxEnemies: 5
   _bulletSpawnPoint: {fileID: 1830169244}
 --- !u!850595691 &1263964384
 LightingSettings:
@@ -453,11 +455,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[ENEMY_POSITIONS]'
       objectReference: {fileID: 0}
-    - target: {fileID: 4006440922598382612, guid: fb5f88ca55685004eb5045521ef99de6,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5325004657775103069, guid: fb5f88ca55685004eb5045521ef99de6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -513,6 +510,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fb5f88ca55685004eb5045521ef99de6, type: 3}
+--- !u!114 &1409730479 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6590590234156152398, guid: fb5f88ca55685004eb5045521ef99de6,
+    type: 3}
+  m_PrefabInstance: {fileID: 1409730478}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd4b533306446d489b3c4cc899718b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1683128697
 GameObject:
   m_ObjectHideFlags: 0

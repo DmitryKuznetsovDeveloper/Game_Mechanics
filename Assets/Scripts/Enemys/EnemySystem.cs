@@ -1,57 +1,46 @@
 ﻿using System.Collections.Generic;
 using GameCycle;
+using Installers;
 using Player;
 using Systems;
 using UnityEngine;
-using Zenject;
 
 namespace Enemys
 {
-    public class EnemySystem : IGameStartListener, IGameTickable
+    public class EnemySystem : IGameFixedTickable
     {
+        public int CurrentEnemyCount => _enemies.Count;
+        
         private readonly GameManager _gameManager;
         private readonly AttackSystem _attackSystem;
-        private readonly EnemyConfig _defaultConfig;
         private readonly PlayerFacade _player;
+        private readonly EnemyPositionService _enemyPositionService;
         private readonly EnemyView.Pool _viewPool;
         private readonly EnemyFacade.Factory _enemyFactory;
-
         private readonly List<EnemyFacade> _enemies = new();
 
         public EnemySystem(
             GameManager gameManager, 
             AttackSystem attackSystem, 
-            [Inject(Id = "DefaultEnemyConfig")] 
-            EnemyConfig defaultConfig,
             PlayerFacade player, 
+            EnemyPositionService enemyPositionService,
             EnemyView.Pool viewPool, 
             EnemyFacade.Factory enemyFactory)
         {
             _gameManager = gameManager;
             _attackSystem = attackSystem;
-            _defaultConfig = defaultConfig;
             _player = player;
+            _enemyPositionService = enemyPositionService;
             _viewPool = viewPool;
             _enemyFactory = enemyFactory;
         }
         
-        public void OnStartGame()
+        public void FixedTick(float deltaTime)
         {
-            for (var i = 0; i < 5; i++)
-            {
-                Vector2 spawnPos = new Vector2(Random.Range(-5f, 5f), 8f);
-                Vector2 attackPos = new Vector2(Random.Range(-5f, 5f), Random.Range(1f, 6f));
-                SpawnEnemy(spawnPos, attackPos, _defaultConfig);
-            }
-        }
-
-        public void Tick(float deltaTime)
-        {
-            var dt = Time.deltaTime;
             for (var i = _enemies.Count - 1; i >= 0; i--)
             {
                 var enemy = _enemies[i];
-                enemy.OnFixedUpdateAI(dt);
+                enemy.OnFixedUpdateAI(deltaTime);
 
                 if (enemy.HasHitPoints())
                     continue;
@@ -64,9 +53,9 @@ namespace Enemys
         public void SpawnEnemy(Vector2 spawnPosition, Vector2 attackDestination, EnemyConfig config)
         {
             var view = _viewPool.Spawn();
-            view.Transform.position = spawnPosition;
+            view.SetPosition(spawnPosition);
 
-            var enemy = _enemyFactory.Create(_gameManager,_attackSystem, view, config);
+            var enemy = _enemyFactory.Create(_gameManager,_attackSystem, view,_enemyPositionService, config);
             enemy.Initialize(attackDestination, _player);
             _enemies.Add(enemy);
         }
