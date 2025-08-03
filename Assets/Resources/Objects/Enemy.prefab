@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 659620479434099170}
   - component: {fileID: 5568771391735819375}
   - component: {fileID: 8244303653581028508}
+  - component: {fileID: 2940984346161324858}
   m_Layer: 11
   m_Name: Enemy
   m_TagString: Untagged
@@ -169,6 +170,25 @@ MonoBehaviour:
   _rigidbody: {fileID: 659620479434099170}
   _renderer: {fileID: 7936085547460007407}
   _firePoint: {fileID: 3195880656587174614}
+  _takeDamageFlash: {fileID: 2940984346161324858}
+--- !u!114 &2940984346161324858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559606060570185700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa98da02803e42b09d2efc43f74f15de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _flashColor: {r: 1, g: 0, b: 0, a: 1}
+  _flashDuration: 0.1
+  _punchStrength: {x: 0.2, y: 0.2, z: 0.2}
+  _punchDuration: 0.2
+  _punchVibrato: 10
+  _punchElasticity: 1
 --- !u!1 &2239154907127902911
 GameObject:
   m_ObjectHideFlags: 0
